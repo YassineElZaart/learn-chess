@@ -1,0 +1,467 @@
+{
+  "lessons": [
+    {
+      "title": "Basic Checkmates",
+      "description": "Learn fundamental checkmating patterns with few pieces",
+      "difficulty_level": "beginner",
+      "order": 1,
+      "topics": [
+        {
+          "title": "Queen and King Checkmate",
+          "description": "Master the most basic checkmate with queen and king versus lone king",
+          "order": 1,
+          "positions": [
+            {
+              "description": "Queen and King vs King - Boxing Method",
+              "position_type": "sequence",
+              "fen": "4k3/8/8/8/8/8/3Q4/4K3 w - - 0 1",
+              "sequences": [
+                {
+                  "move_san": "Qd4",
+                  "explanation": "Centralize the queen to control squares and cut off the king",
+                  "parent_move_id": null,
+                  "sequence_order": 1,
+                  "variation_number": 0
+                },
+                {
+                  "move_san": "Ke7",
+                  "explanation": "Black king tries to stay in the center",
+                  "parent_move_id": 1,
+                  "sequence_order": 2,
+                  "variation_number": 0
+                },
+                {
+                  "move_san": "Ke2",
+                  "explanation": "Bring your king up to help - the queen needs support",
+                  "parent_move_id": 2,
+                  "sequence_order": 3,
+                  "variation_number": 0
+                },
+                {
+                  "move_san": "Ke6",
+                  "explanation": "Black king moves",
+                  "parent_move_id": 3,
+                  "sequence_order": 4,
+                  "variation_number": 0
+                },
+                {
+                  "move_san": "Ke3",
+                  "explanation": "Keep bringing the king closer",
+                  "parent_move_id": 4,
+                  "sequence_order": 5,
+                  "variation_number": 0
+                },
+                {
+                  "move_san": "Kf5",
+                  "explanation": "Black tries to escape to the side",
+                  "parent_move_id": 5,
+                  "sequence_order": 6,
+                  "variation_number": 0
+                },
+                {
+                  "move_san": "Qe4+",
+                  "explanation": "Check! Force the king towards the edge",
+                  "parent_move_id": 6,
+                  "sequence_order": 7,
+                  "variation_number": 0
+                },
+                {
+                  "move_san": "Kg5",
+                  "explanation": "King must move away from check",
+                  "parent_move_id": 7,
+                  "sequence_order": 8,
+                  "variation_number": 0
+                },
+                {
+                  "move_san": "Kf3",
+                  "explanation": "Your king follows to maintain pressure",
+                  "parent_move_id": 8,
+                  "sequence_order": 9,
+                  "variation_number": 0
+                },
+                {
+                  "move_san": "Kf6",
+                  "explanation": "Black king retreats",
+                  "parent_move_id": 9,
+                  "sequence_order": 10,
+                  "variation_number": 0
+                },
+                {
+                  "move_san": "Kf4",
+                  "explanation": "Stay close with your king",
+                  "parent_move_id": 10,
+                  "sequence_order": 11,
+                  "variation_number": 0
+                },
+                {
+                  "move_san": "Kg6",
+                  "explanation": "Black heading towards the edge",
+                  "parent_move_id": 11,
+                  "sequence_order": 12,
+                  "variation_number": 0
+                },
+                {
+                  "move_san": "Qe6+",
+                  "explanation": "Check again! Push the king to the back rank",
+                  "parent_move_id": 12,
+                  "sequence_order": 13,
+                  "variation_number": 0
+                },
+                {
+                  "move_san": "Kh7",
+                  "explanation": "Forced to the edge",
+                  "parent_move_id": 13,
+                  "sequence_order": 14,
+                  "variation_number": 0
+                },
+                {
+                  "move_san": "Kg5",
+                  "explanation": "King moves up to help deliver mate",
+                  "parent_move_id": 14,
+                  "sequence_order": 15,
+                  "variation_number": 0
+                },
+                {
+                  "move_san": "Kg7",
+                  "explanation": "Black tries to escape",
+                  "parent_move_id": 15,
+                  "sequence_order": 16,
+                  "variation_number": 0
+                },
+                {
+                  "move_san": "Qe7+",
+                  "explanation": "Force the king to the corner",
+                  "parent_move_id": 16,
+                  "sequence_order": 17,
+                  "variation_number": 0
+                },
+                {
+                  "move_san": "Kg8",
+                  "explanation": "King trapped on back rank",
+                  "parent_move_id": 17,
+                  "sequence_order": 18,
+                  "variation_number": 0
+                },
+                {
+                  "move_san": "Kg6",
+                  "explanation": "Your king takes away escape squares",
+                  "parent_move_id": 18,
+                  "sequence_order": 19,
+                  "variation_number": 0
+                },
+                {
+                  "move_san": "Kh8",
+                  "explanation": "King goes to corner",
+                  "parent_move_id": 19,
+                  "sequence_order": 20,
+                  "variation_number": 0
+                },
+                {
+                  "move_san": "Qg7#",
+                  "explanation": "Checkmate! The queen delivers mate supported by the king",
+                  "parent_move_id": 20,
+                  "sequence_order": 21,
+                  "variation_number": 0
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Two Rooks Checkmate",
+          "description": "Learn the 'Lawnmower' or 'Ladder' checkmate with two rooks",
+          "order": 2,
+          "positions": [
+            {
+              "description": "Two Rooks vs King - The Lawnmower Mate",
+              "position_type": "sequence",
+              "fen": "4k3/8/8/8/8/8/R7/R6K w - - 0 1",
+              "sequences": [
+                {
+                  "move_san": "Ra4",
+                  "explanation": "Move one rook to the 4th rank to cut off the king",
+                  "parent_move_id": null,
+                  "sequence_order": 1,
+                  "variation_number": 0
+                },
+                {
+                  "move_san": "Kd7",
+                  "explanation": "King tries to stay centralized",
+                  "parent_move_id": 1,
+                  "sequence_order": 2,
+                  "variation_number": 0
+                },
+                {
+                  "move_san": "Rh1",
+                  "explanation": "Bring the other rook to create a barrier",
+                  "parent_move_id": 2,
+                  "sequence_order": 3,
+                  "variation_number": 0
+                },
+                {
+                  "move_san": "Ke6",
+                  "explanation": "King moves forward",
+                  "parent_move_id": 3,
+                  "sequence_order": 4,
+                  "variation_number": 0
+                },
+                {
+                  "move_san": "Rh5",
+                  "explanation": "Rook to the 5th rank - the 'lawnmower' pattern begins",
+                  "parent_move_id": 4,
+                  "sequence_order": 5,
+                  "variation_number": 0
+                },
+                {
+                  "move_san": "Kf6",
+                  "explanation": "King forced back",
+                  "parent_move_id": 5,
+                  "sequence_order": 6,
+                  "variation_number": 0
+                },
+                {
+                  "move_san": "Ra6+",
+                  "explanation": "Check! The rooks work together like a lawnmower",
+                  "parent_move_id": 6,
+                  "sequence_order": 7,
+                  "variation_number": 0
+                },
+                {
+                  "move_san": "Kg7",
+                  "explanation": "King pushed further back",
+                  "parent_move_id": 7,
+                  "sequence_order": 8,
+                  "variation_number": 0
+                },
+                {
+                  "move_san": "Rh7+",
+                  "explanation": "Check again! Alternating rooks push the king",
+                  "parent_move_id": 8,
+                  "sequence_order": 9,
+                  "variation_number": 0
+                },
+                {
+                  "move_san": "Kf8",
+                  "explanation": "King forced to back rank",
+                  "parent_move_id": 9,
+                  "sequence_order": 10,
+                  "variation_number": 0
+                },
+                {
+                  "move_san": "Ra8#",
+                  "explanation": "Checkmate! The king is trapped on the back rank",
+                  "parent_move_id": 10,
+                  "sequence_order": 11,
+                  "variation_number": 0
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Single Rook Checkmate",
+          "description": "Master checkmating with just a rook and king",
+          "order": 3,
+          "positions": [
+            {
+              "description": "Rook and King vs King - Basic Technique",
+              "position_type": "sequence",
+              "fen": "4k3/8/8/8/8/8/8/R3K3 w - - 0 1",
+              "sequences": [
+                {
+                  "move_san": "Ra4",
+                  "explanation": "Cut off the king along the 4th rank",
+                  "parent_move_id": null,
+                  "sequence_order": 1,
+                  "variation_number": 0
+                },
+                {
+                  "move_san": "Ke7",
+                  "explanation": "Black king in the center",
+                  "parent_move_id": 1,
+                  "sequence_order": 2,
+                  "variation_number": 0
+                },
+                {
+                  "move_san": "Ke2",
+                  "explanation": "Bring your king to help - it's essential!",
+                  "parent_move_id": 2,
+                  "sequence_order": 3,
+                  "variation_number": 0
+                },
+                {
+                  "move_san": "Kd6",
+                  "explanation": "Black approaches",
+                  "parent_move_id": 3,
+                  "sequence_order": 4,
+                  "variation_number": 0
+                },
+                {
+                  "move_san": "Ke3",
+                  "explanation": "Keep marching your king forward",
+                  "parent_move_id": 4,
+                  "sequence_order": 5,
+                  "variation_number": 0
+                },
+                {
+                  "move_san": "Kd5",
+                  "explanation": "Kings face off",
+                  "parent_move_id": 5,
+                  "sequence_order": 6,
+                  "variation_number": 0
+                },
+                {
+                  "move_san": "Kd3",
+                  "explanation": "Opposition - your king controls key squares",
+                  "parent_move_id": 6,
+                  "sequence_order": 7,
+                  "variation_number": 0
+                },
+                {
+                  "move_san": "Ke5",
+                  "explanation": "Black king blocked from crossing",
+                  "parent_move_id": 7,
+                  "sequence_order": 8,
+                  "variation_number": 0
+                },
+                {
+                  "move_san": "Ra5+",
+                  "explanation": "Check! Push the king back",
+                  "parent_move_id": 8,
+                  "sequence_order": 9,
+                  "variation_number": 0
+                },
+                {
+                  "move_san": "Kf6",
+                  "explanation": "King retreats",
+                  "parent_move_id": 9,
+                  "sequence_order": 10,
+                  "variation_number": 0
+                },
+                {
+                  "move_san": "Ke4",
+                  "explanation": "Your king advances",
+                  "parent_move_id": 10,
+                  "sequence_order": 11,
+                  "variation_number": 0
+                },
+                {
+                  "move_san": "Kg6",
+                  "explanation": "Black heading to the side",
+                  "parent_move_id": 11,
+                  "sequence_order": 12,
+                  "variation_number": 0
+                },
+                {
+                  "move_san": "Kf4",
+                  "explanation": "Follow with your king",
+                  "parent_move_id": 12,
+                  "sequence_order": 13,
+                  "variation_number": 0
+                },
+                {
+                  "move_san": "Kh6",
+                  "explanation": "Black king going to edge",
+                  "parent_move_id": 13,
+                  "sequence_order": 14,
+                  "variation_number": 0
+                },
+                {
+                  "move_san": "Kg4",
+                  "explanation": "Stay close",
+                  "parent_move_id": 14,
+                  "sequence_order": 15,
+                  "variation_number": 0
+                },
+                {
+                  "move_san": "Kg7",
+                  "explanation": "King on 7th rank",
+                  "parent_move_id": 15,
+                  "sequence_order": 16,
+                  "variation_number": 0
+                },
+                {
+                  "move_san": "Ra6",
+                  "explanation": "Rook cuts off on 6th rank now",
+                  "parent_move_id": 16,
+                  "sequence_order": 17,
+                  "variation_number": 0
+                },
+                {
+                  "move_san": "Kf7",
+                  "explanation": "King tries to escape",
+                  "parent_move_id": 17,
+                  "sequence_order": 18,
+                  "variation_number": 0
+                },
+                {
+                  "move_san": "Kf5",
+                  "explanation": "Your king takes control",
+                  "parent_move_id": 18,
+                  "sequence_order": 19,
+                  "variation_number": 0
+                },
+                {
+                  "move_san": "Kg7",
+                  "explanation": "Black oscillates",
+                  "parent_move_id": 19,
+                  "sequence_order": 20,
+                  "variation_number": 0
+                },
+                {
+                  "move_san": "Ra7+",
+                  "explanation": "Check! Force to back rank",
+                  "parent_move_id": 20,
+                  "sequence_order": 21,
+                  "variation_number": 0
+                },
+                {
+                  "move_san": "Kg8",
+                  "explanation": "King on back rank",
+                  "parent_move_id": 21,
+                  "sequence_order": 22,
+                  "variation_number": 0
+                },
+                {
+                  "move_san": "Kg6",
+                  "explanation": "Your king controls escape squares",
+                  "parent_move_id": 22,
+                  "sequence_order": 23,
+                  "variation_number": 0
+                },
+                {
+                  "move_san": "Kf8",
+                  "explanation": "King in corner area",
+                  "parent_move_id": 23,
+                  "sequence_order": 24,
+                  "variation_number": 0
+                },
+                {
+                  "move_san": "Kf6",
+                  "explanation": "Keep the pressure",
+                  "parent_move_id": 24,
+                  "sequence_order": 25,
+                  "variation_number": 0
+                },
+                {
+                  "move_san": "Kg8",
+                  "explanation": "King trapped",
+                  "parent_move_id": 25,
+                  "sequence_order": 26,
+                  "variation_number": 0
+                },
+                {
+                  "move_san": "Ra8#",
+                  "explanation": "Checkmate! The rook delivers mate on the back rank",
+                  "parent_move_id": 26,
+                  "sequence_order": 27,
+                  "variation_number": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
