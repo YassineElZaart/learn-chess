@@ -406,6 +406,8 @@ class GameConsumer(AsyncWebsocketConsumer):
 
                 # Update game state
                 game.current_fen = new_fen
+                # Save the turn BEFORE changing it (this is the player who just moved)
+                previous_turn = game.current_turn
                 game.current_turn = 'black' if game.current_turn == 'white' else 'white'
 
                 # Build PGN from GameMove records instead of engine.get_pgn_moves()
