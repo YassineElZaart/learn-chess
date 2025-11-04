@@ -109,12 +109,17 @@ class Command(BaseCommand):
         position_desc = position_data['description']
         self.stdout.write(f'          ♟ Position: {position_desc}')
 
+        # Determine if this is a sequence position
+        is_sequence = position_data.get('position_type') == 'sequence'
+        has_sequences = bool(position_data.get('sequences'))
+
         # Create position
         position = Position.objects.create(
             topic=topic,
             description=position_data['description'],
-            position_type=position_data['position_type'],
-            fen=position_data['fen']
+            fen=position_data['fen'],
+            is_sequence_part=is_sequence or has_sequences,
+            order=topic.positions.count()  # Auto-increment order
         )
 
         # Import sequences if this is a sequence position
