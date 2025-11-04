@@ -1,5 +1,5 @@
 """
-URL configuration for chess_platform project.
+URL configuration for Jeffy Academy project.
 """
 from django.contrib import admin
 from django.urls import path, include
@@ -21,6 +21,6 @@ if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 # Customize admin site
-admin.site.site_header = "Chess Platform Administration"
-admin.site.site_title = "Chess Platform Admin"
-admin.site.index_title = "Welcome to Chess Platform Administration"
+admin.site.site_header = "Jeffy Academy Administration"
+admin.site.site_title = "Jeffy Academy Admin"
+admin.site.index_title = "Welcome to Jeffy Academy Administration"

@@ -237,6 +237,20 @@ class BoardAnnotations {
         const piece = this.chess.get(square);
         console.log('Piece on square:', piece);
 
+        // Validate that the piece belongs to the player whose turn it is
+        if (!piece) {
+            console.log('No piece on this square');
+            this.clearLegalMoves();
+            return;
+        }
+
+        const currentTurn = this.chess.turn();
+        if (piece.color !== currentTurn) {
+            console.log(`Wrong turn - piece is ${piece.color} but it's ${currentTurn}'s turn`);
+            this.clearLegalMoves();
+            return;
+        }
+
         // Get ALL legal moves to verify Chess.js is working
         const allMoves = this.chess.moves({ verbose: false });
         console.log('Total legal moves in position:', allMoves.length, allMoves.slice(0, 5));

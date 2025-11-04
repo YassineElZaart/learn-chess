@@ -356,12 +356,16 @@ class GameMove(models.Model):
 
             # Additional check: SAN should contain piece notation or be lowercase pawn moves
             # Valid patterns: Kf3, Nxe5, e4, exd5, O-O, O-O-O, etc.
-            # Should NOT be all lowercase 4+ characters (which would be UCI)
+            # Pawn captures like exd5, gxf4 are valid SAN (pattern: [a-h]x[a-h][1-8])
+            # Should NOT be all lowercase 4+ characters UNLESS it's a pawn capture
             if len(self.move_san) >= 4 and self.move_san.islower():
-                raise ValidationError({
-                    'move_san': f'Move notation "{self.move_san}" appears to be in UCI format. '
-                                f'Please use Standard Algebraic Notation (e.g., "Nf3", "e4", "O-O").'
-                })
+                # Check if it's a valid pawn capture (e.g., exd5, gxf4, axb3)
+                pawn_capture_pattern = re.compile(r'^[a-h]x[a-h][1-8][=]?[QRBN]?$')
+                if not pawn_capture_pattern.match(self.move_san):
+                    raise ValidationError({
+                        'move_san': f'Move notation "{self.move_san}" appears to be in UCI format. '
+                                    f'Please use Standard Algebraic Notation (e.g., "Nf3", "e4", "O-O").'
+                    })
 
     def __str__(self):
         return f"{self.game.unique_link} - Move {self.move_number}: {self.move_san}"
