@@ -1,0 +1,299 @@
+/* ============================================
+   CHESS PLATFORM - THEME DEFINITIONS
+   Dark Mode & Theme Variations
+   ============================================ */
+
+/* ============================================
+   MIDNIGHT GRANDMASTER THEME (DARK MODE)
+   Premium dark theme with amber accents
+   ============================================ */
+
+:root[data-theme="dark"] {
+  /* === DARK MODE BASE COLORS === */
+  --dark-obsidian-50: #1f2937;
+  --dark-obsidian-100: #1a1f2e;
+  --dark-obsidian-200: #151925;
+  --dark-obsidian-300: #0f131c;
+  --dark-obsidian-400: #0a0e1a;
+  --dark-obsidian-500: #060912;
+  --dark-obsidian-600: #040609;
+  --dark-obsidian-700: #020305;
+  --dark-obsidian-800: #010203;
+  --dark-obsidian-900: #000000;
+
+  /* === AMBER GOLD ACCENTS (DARK MODE) === */
+  --amber-gold-50: #fff8e1;
+  --amber-gold-100: #ffecb3;
+  --amber-gold-200: #ffe082;
+  --amber-gold-300: #ffd54f;
+  --amber-gold-400: #ffca28;
+  --amber-gold-500: #ffc107;
+  --amber-gold-600: #ffb300;
+  --amber-gold-700: #ffa000;
+  --amber-gold-800: #ff8f00;
+  --amber-gold-900: #ff6f00;
+
+  /* === DARK CHESS BOARD COLORS === */
+  --board-light: #779952;
+  --board-dark: #3d5a3d;
+  --board-highlight: #baca44;
+  --board-move-from: rgba(186, 202, 68, 0.5);
+  --board-move-to: rgba(186, 202, 68, 0.3);
+  --board-check: rgba(239, 83, 80, 0.6);
+
+  /* === SEMANTIC COLORS - DARK MODE === */
+  --bg-primary: #0a0e1a;
+  --bg-secondary: #0f131c;
+  --bg-tertiary: #151925;
+  --bg-card: #1a1f2e;
+  --bg-hover: #1f2937;
+  --bg-accent: rgba(255, 193, 7, 0.1);
+
+  --text-primary: #f3f4f6;
+  --text-secondary: #d1d5db;
+  --text-tertiary: #9ca3af;
+  --text-on-dark: #f9fafb;
+  --text-on-accent: #0f131c;
+
+  --border-primary: #374151;
+  --border-secondary: #4b5563;
+  --border-accent: var(--amber-gold-600);
+
+  /* === STATUS COLORS - DARK MODE === */
+  --success: #10b981;
+  --success-light: rgba(16, 185, 129, 0.15);
+  --warning: #fbbf24;
+  --warning-light: rgba(251, 191, 36, 0.15);
+  --error: #ef4444;
+  --error-light: rgba(239, 68, 68, 0.15);
+  --info: #60a5fa;
+  --info-light: rgba(96, 165, 250, 0.15);
+
+  /* === SHADOWS - DARK MODE === */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.6), 0 2px 4px -1px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.7), 0 4px 6px -2px rgba(0, 0, 0, 0.5);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.8), 0 10px 10px -5px rgba(0, 0, 0, 0.6);
+  --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.9);
+  --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.6);
+  --shadow-gold: 0 10px 40px -10px rgba(255, 193, 7, 0.3);
+
+  /* === GLASSMORPHISM EFFECTS === */
+  --glass-bg: rgba(26, 31, 46, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+
+  /* === GRADIENT OVERLAYS === */
+  --gradient-primary: linear-gradient(135deg, #ffc107 0%, #ff8f00 100%);
+  --gradient-secondary: linear-gradient(135deg, #1a1f2e 0%, #0a0e1a 100%);
+  --gradient-accent: linear-gradient(135deg, rgba(255, 193, 7, 0.2) 0%, rgba(255, 143, 0, 0.1) 100%);
+}
+
+/* ============================================
+   THEME-SPECIFIC COMPONENT ADJUSTMENTS
+   ============================================ */
+
+/* Dark Mode: Enhanced glow effects on focus */
+:root[data-theme="dark"] :focus-visible {
+  outline: 2px solid var(--amber-gold-500);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(255, 193, 7, 0.2);
+}
+
+/* Dark Mode: Enhanced selection colors */
+:root[data-theme="dark"] ::selection {
+  background-color: rgba(255, 193, 7, 0.3);
+  color: var(--text-primary);
+}
+
+:root[data-theme="dark"] ::-moz-selection {
+  background-color: rgba(255, 193, 7, 0.3);
+  color: var(--text-primary);
+}
+
+/* Dark Mode: Scrollbar styling */
+:root[data-theme="dark"] ::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+:root[data-theme="dark"] ::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+  border-radius: var(--radius-sm);
+}
+
+:root[data-theme="dark"] ::-webkit-scrollbar-thumb {
+  background: var(--border-secondary);
+  border-radius: var(--radius-sm);
+  border: 2px solid var(--bg-secondary);
+}
+
+:root[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+  background: var(--amber-gold-700);
+}
+
+/* ============================================
+   THEME TRANSITION ANIMATION
+   ============================================ */
+
+body.theme-transitioning,
+body.theme-transitioning *,
+body.theme-transitioning *::before,
+body.theme-transitioning *::after {
+  transition:
+    background-color var(--duration-slow) ease,
+    color var(--duration-slow) ease,
+    border-color var(--duration-slow) ease,
+    box-shadow var(--duration-slow) ease,
+    fill var(--duration-slow) ease,
+    stroke var(--duration-slow) ease !important;
+}
+
+/* ============================================
+   ACCESSIBILITY: HIGH CONTRAST MODE
+   ============================================ */
+
+@media (prefers-contrast: high) {
+  :root {
+    --text-secondary: #4a4a4a;
+    --border-primary: #999999;
+  }
+
+  :root[data-theme="dark"] {
+    --text-secondary: #e0e0e0;
+    --border-primary: #666666;
+  }
+}
+
+/* ============================================
+   AUTO DARK MODE (System Preference)
+   ============================================ */
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    /* Apply dark mode variables if no explicit theme is set */
+    /* This allows automatic dark mode based on system preference */
+    /* Note: If user has set a preference, data-theme will override this */
+
+    /* We won't auto-apply dark mode by default to respect user choice */
+    /* The theme-manager.js will handle this logic */
+  }
+}
+
+/* ============================================
+   THEME-AWARE IMAGES & MEDIA
+   ============================================ */
+
+/* Hide light mode images in dark mode */
+:root[data-theme="dark"] .light-mode-only {
+  display: none;
+}
+
+/* Hide dark mode images in light mode */
+:root:not([data-theme="dark"]) .dark-mode-only {
+  display: none;
+}
+
+/* Reduce image brightness in dark mode for better harmony */
+:root[data-theme="dark"] img:not(.preserve-brightness) {
+  opacity: 0.9;
+}
+
+/* ============================================
+   CHESS PIECE COLORS (Theme-Aware)
+   ============================================ */
+
+/* Light mode: Traditional piece colors */
+:root {
+  --piece-white: #ffffff;
+  --piece-white-outline: #cccccc;
+  --piece-black: #1a1a1a;
+  --piece-black-outline: #000000;
+}
+
+/* Dark mode: Adjusted piece colors for better visibility */
+:root[data-theme="dark"] {
+  --piece-white: #f9fafb;
+  --piece-white-outline: #d1d5db;
+  --piece-black: #1f2937;
+  --piece-black-outline: #0a0e1a;
+}
+
+/* ============================================
+   CODE BLOCK THEME ADJUSTMENTS
+   ============================================ */
+
+/* Light mode code blocks */
+:root pre,
+:root code {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-primary);
+}
+
+/* Dark mode code blocks with better contrast */
+:root[data-theme="dark"] pre,
+:root[data-theme="dark"] code {
+  background-color: #1f2937;
+  color: #e5e7eb;
+  border: 1px solid var(--border-primary);
+}
+
+/* Syntax highlighting adjustments for dark mode */
+:root[data-theme="dark"] .hljs-keyword { color: #fbbf24; }
+:root[data-theme="dark"] .hljs-string { color: #10b981; }
+:root[data-theme="dark"] .hljs-number { color: #60a5fa; }
+:root[data-theme="dark"] .hljs-comment { color: #6b7280; }
+
+/* ============================================
+   PRINT MODE OVERRIDE
+   ============================================ */
+
+@media print {
+  /* Always use light mode for printing */
+  :root,
+  :root[data-theme="dark"] {
+    --bg-primary: #ffffff;
+    --bg-card: #ffffff;
+    --text-primary: #000000;
+    --text-secondary: #333333;
+    --border-primary: #cccccc;
+  }
+
+  /* Remove shadows and transparency for print */
+  * {
+    box-shadow: none !important;
+    text-shadow: none !important;
+    background: transparent !important;
+  }
+
+  body {
+    background: white !important;
+    color: black !important;
+  }
+}
+
+/* ============================================
+   THEME LOADING STATE
+   ============================================ */
+
+/* Prevent flash of unstyled content during theme load */
+html:not([data-theme]) {
+  visibility: hidden;
+}
+
+html[data-theme] {
+  visibility: visible;
+}
+
+/* ============================================
+   EXPERIMENTAL: CUSTOM THEME SUPPORT
+   ============================================ */
+
+/* Future expansion: Allow users to create custom themes */
+/* These can be dynamically loaded via JavaScript */
+
+:root[data-theme="custom"] {
+  /* Custom theme variables can be injected here */
+  /* via JavaScript or server-side rendering */
+}

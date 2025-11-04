@@ -1,0 +1,290 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Game {{ game.unique_link }} - Chess Academy{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.css">
+<style>
+    #board {
+        box-shadow: var(--shadow-2xl);
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        border: 4px solid var(--chess-wood-600);
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .connection-indicator {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-2);
+        padding: var(--space-2) var(--space-4);
+        border-radius: var(--radius-full);
+        font-size: var(--text-sm);
+        font-weight: var(--font-medium);
+        background: var(--bg-tertiary);
+        border: 1px solid var(--border-primary);
+    }
+
+    .connection-indicator.connected {
+        background: var(--success-light);
+        color: var(--success);
+        border-color: var(--success);
+    }
+
+    .connection-indicator.connecting {
+        background: var(--warning-light);
+        color: var(--warning);
+        border-color: var(--warning);
+    }
+
+    .connection-indicator.disconnected {
+        background: var(--error-light);
+        color: var(--error);
+        border-color: var(--error);
+    }
+
+    .connection-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: var(--radius-full);
+        background: currentColor;
+        animation: pulse 2s ease-in-out infinite;
+    }
+
+    .move-item {
+        display: inline-block;
+        padding: var(--space-1) var(--space-2);
+        margin: var(--space-1);
+        background: var(--bg-tertiary);
+        border-radius: var(--radius-sm);
+        font-family: var(--font-mono);
+        font-size: var(--text-sm);
+        color: var(--text-primary);
+        transition: all var(--duration-fast) ease;
+    }
+
+    .move-item:hover {
+        background: var(--royal-gold-100);
+        transform: translateY(-1px);
+    }
+
+    .move-number {
+        font-weight: var(--font-bold);
+        color: var(--text-secondary);
+        margin-right: var(--space-2);
+    }
+
+    @keyframes check-flash {
+        0%, 100% { background: transparent; }
+        50% { background: rgba(239, 68, 68, 0.3); }
+    }
+
+    .in-check {
+        animation: check-flash 1s ease-in-out infinite;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section style="min-height: 100vh; background: var(--bg-secondary); padding: var(--space-10) 0;">
+    <div class="container">
+        <div style="max-width: 1400px; margin: 0 auto;">
+            <!-- Header -->
+            <div class="animate-fade-in" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-6); flex-wrap: wrap; gap: var(--space-4);">
+                <h1 class="font-heading" style="font-size: var(--text-3xl); color: var(--text-primary); margin: 0;">
+                    ♟️ Live Chess Game
+                </h1>
+                <div id="connectionStatus" class="connection-indicator connecting">
+                    <span class="connection-dot"></span>
+                    <span>Connecting...</span>
+                </div>
+            </div>
+
+            <!-- Main Game Grid -->
+            <div style="display: grid; grid-template-columns: 1fr 350px; gap: var(--space-6); align-items: start;">
+
+                <!-- Left: Chess Board & Players -->
+                <div class="animate-scale-in">
+                    <!-- Player Cards -->
+                    <div style="display: flex; justify-content: space-between; margin-bottom: var(--space-4); gap: var(--space-4); flex-wrap: wrap;">
+                        <!-- Black Player (Top) -->
+                        <div class="player-card" id="blackPlayerCard" style="flex: 1; min-width: 200px;">
+                            <div class="player-avatar" style="background: linear-gradient(135deg, #4b5563, #1f2937);">
+                                <span id="blackPlayerInitial">?</span>
+                            </div>
+                            <div class="player-info">
+                                <div class="player-name" id="blackPlayer">{{ game.black_player.username|default:"Waiting..." }}</div>
+                                <div class="player-meta">⚫ Black</div>
+                            </div>
+                        </div>
+
+                        <!-- White Player (Top) -->
+                        <div class="player-card" id="whitePlayerCard" style="flex: 1; min-width: 200px;">
+                            <div class="player-avatar" style="background: linear-gradient(135deg, #f3f4f6, #e5e7eb);">
+                                <span id="whitePlayerInitial" style="color: #1f2937;">?</span>
+                            </div>
+                            <div class="player-info">
+                                <div class="player-name" id="whitePlayer">{{ game.white_player.username|default:"Waiting..." }}</div>
+                                <div class="player-meta">⚪ White</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Board Container -->
+                    <div class="card">
+                        <div id="board" style="width: 100%;"></div>
+                    </div>
+
+                    <!-- Game Controls -->
+                    <div style="display: flex; justify-content: center; gap: var(--space-3); margin-top: var(--space-6); flex-wrap: wrap;">
+                        <button id="resignBtn" class="btn btn-secondary hover-lift">
+                            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9" />
+                            </svg>
+                            Resign
+                        </button>
+                        <button id="drawBtn" class="btn btn-ghost hover-lift">
+                            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                            </svg>
+                            Offer Draw
+                        </button>
+                        <button id="takebackBtn" class="btn btn-ghost hover-lift" style="display: none;">
+                            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
+                            </svg>
+                            Request Take Back
+                        </button>
+                        <button id="copyLinkBtn" class="btn btn-accent hover-lift">
+                            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                            </svg>
+                            Share Link
+                        </button>
+                    </div>
+
+                    <!-- Join Game Section -->
+                    {% if can_join %}
+                    <div id="joinGameSection" class="card animate-slide-in-up" style="margin-top: var(--space-6); background: var(--bg-accent); border: 2px solid var(--border-accent); text-align: center;">
+                        <h3 style="font-weight: var(--font-bold); margin-bottom: var(--space-4); color: var(--text-primary);">
+                            🎮 Join this game
+                        </h3>
+                        <button id="joinGameBtn" class="btn btn-primary hover-lift" style="width: 100%;">
+                            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z" />
+                            </svg>
+                            Join Game
+                        </button>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Right Sidebar: Game Info & History -->
+                <div style="display: flex; flex-direction: column; gap: var(--space-6);">
+                    <!-- Game Status Card -->
+                    <div class="card animate-scale-in" style="animation-delay: 0.1s;">
+                        <h2 style="font-weight: var(--font-bold); font-size: var(--text-xl); margin-bottom: var(--space-4); color: var(--text-primary);">
+                            📊 Game Info
+                        </h2>
+                        <div style="display: flex; flex-direction: column; gap: var(--space-3); font-size: var(--text-sm);">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span style="color: var(--text-secondary); font-weight: var(--font-medium);">Status:</span>
+                                <span id="gameStatus" class="badge badge-success">{{ game.status|title }}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span style="color: var(--text-secondary); font-weight: var(--font-medium);">Turn:</span>
+                                <span id="currentTurn" style="font-weight: var(--font-bold); color: var(--text-primary);">{{ game.current_turn|title }}</span>
+                            </div>
+                            {% if user_color %}
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span style="color: var(--text-secondary); font-weight: var(--font-medium);">You are:</span>
+                                <span class="badge badge-gold">{{ user_color|title }}</span>
+                            </div>
+                            {% endif %}
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span style="color: var(--text-secondary); font-weight: var(--font-medium);">Moves:</span>
+                                <span id="moveCount" style="font-weight: var(--font-bold); color: var(--text-primary);">{{ moves|length }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Move History Card -->
+                    <div class="card animate-scale-in" style="animation-delay: 0.2s; flex: 1;">
+                        <h2 style="font-weight: var(--font-bold); font-size: var(--text-xl); margin-bottom: var(--space-4); color: var(--text-primary);">
+                            📜 Move History
+                        </h2>
+                        <div id="moveHistory" class="move-history" style="max-height: 500px; overflow-y: auto;">
+                            {% for move in moves %}
+                                {% if forloop.counter0|divisibleby:2 %}
+                                    <span class="move-number">{{ forloop.counter0|add:2|floatformat:0|floatformat:0|add:"." }}</span>
+                                {% endif %}
+                                <span class="move-item">{{ move.move_san }}</span>
+                            {% empty %}
+                                <p style="color: var(--text-tertiary); text-align: center; padding: var(--space-8); font-style: italic;">
+                                    No moves yet. Start playing!
+                                </p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Game Result Modal -->
+<div id="gameResultModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); z-index: 10000; align-items: center; justify-content: center;">
+    <div style="background: linear-gradient(135deg, var(--chess-wood-500), var(--chess-wood-700)); border-radius: var(--radius-2xl); padding: var(--space-8); max-width: 500px; width: 90%; box-shadow: var(--shadow-2xl); border: 3px solid var(--royal-gold-500); position: relative;">
+        <!-- Close button -->
+        <button id="closeResultModal" style="position: absolute; top: var(--space-4); right: var(--space-4); background: rgba(255, 255, 255, 0.2); border: 2px solid rgba(255, 255, 255, 0.3); border-radius: var(--radius-full); width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all var(--duration-base) ease; color: white; font-size: var(--text-2xl); font-weight: bold;">
+            ×
+        </button>
+
+        <!-- Icon -->
+        <div id="resultIcon" style="text-align: center; font-size: 5rem; margin-bottom: var(--space-4);"></div>
+
+        <!-- Title -->
+        <h2 id="resultTitle" style="text-align: center; color: white; font-size: var(--text-3xl); font-weight: var(--font-bold); margin-bottom: var(--space-3);"></h2>
+
+        <!-- Message -->
+        <p id="resultMessage" style="text-align: center; color: rgba(255, 255, 255, 0.9); font-size: var(--text-lg); margin-bottom: var(--space-6);"></p>
+
+        <!-- Actions -->
+        <div style="display: flex; gap: var(--space-3); justify-content: center;">
+            <button id="closeResultBtn" class="btn btn-secondary" style="background: white; color: var(--chess-wood-700); font-weight: var(--font-bold);">
+                Close
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Toast Container -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+<script src="{% static 'js/board-annotations.js' %}"></script>
+<script>
+const GAME_ID = '{{ game.unique_link }}';
+const STARTING_FEN = '{{ game.current_fen }}';
+const CURRENT_USERNAME = '{{ user.username }}';
+
+// Update player initials on load
+document.addEventListener('DOMContentLoaded', function() {
+    const whitePlayer = document.getElementById('whitePlayer').textContent.trim();
+    const blackPlayer = document.getElementById('blackPlayer').textContent.trim();
+
+    if (whitePlayer && whitePlayer !== 'Waiting...') {
+        document.getElementById('whitePlayerInitial').textContent = whitePlayer.charAt(0).toUpperCase();
+    }
+
+    if (blackPlayer && blackPlayer !== 'Waiting...') {
+        document.getElementById('blackPlayerInitial').textContent = blackPlayer.charAt(0).toUpperCase();
+    }
+});
+</script>
+<script src="{% static 'js/game.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,648 @@
+/* ============================================
+   CHESS PLATFORM - ANIMATIONS & MICRO-INTERACTIONS
+   Smooth, Premium Animations
+   ============================================ */
+
+/* ============================================
+   KEYFRAME ANIMATIONS
+   ============================================ */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInDown {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes scaleOut {
+  from {
+    transform: scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  10%, 30%, 50%, 70%, 90% {
+    transform: translateX(-5px);
+  }
+  20%, 40%, 60%, 80% {
+    transform: translateX(5px);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.9;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+@keyframes glow {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(244, 196, 48, 0.2),
+                0 0 10px rgba(244, 196, 48, 0.1);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(244, 196, 48, 0.4),
+                0 0 30px rgba(244, 196, 48, 0.2),
+                0 0 40px rgba(244, 196, 48, 0.1);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes wiggle {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-3deg);
+  }
+  75% {
+    transform: rotate(3deg);
+  }
+}
+
+/* Chess piece capture animation */
+@keyframes captureSquish {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.8) rotate(10deg);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(0) rotate(45deg);
+    opacity: 0;
+  }
+}
+
+/* Check indicator pulse */
+@keyframes checkPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+  }
+}
+
+/* ============================================
+   UTILITY ANIMATION CLASSES
+   ============================================ */
+
+.animate-fade-in {
+  animation: fadeIn var(--duration-base) ease;
+}
+
+.animate-fade-out {
+  animation: fadeOut var(--duration-base) ease;
+}
+
+.animate-slide-in-right {
+  animation: slideInRight var(--duration-base) ease;
+}
+
+.animate-slide-in-left {
+  animation: slideInLeft var(--duration-base) ease;
+}
+
+.animate-slide-in-up {
+  animation: slideInUp var(--duration-base) ease;
+}
+
+.animate-slide-in-down {
+  animation: slideInDown var(--duration-base) ease;
+}
+
+.animate-scale-in {
+  animation: scaleIn var(--duration-base) ease;
+}
+
+.animate-bounce {
+  animation: bounce 1s ease infinite;
+}
+
+.animate-shake {
+  animation: shake 0.5s ease;
+}
+
+.animate-pulse {
+  animation: pulse 2s ease infinite;
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-wiggle {
+  animation: wiggle 0.5s ease;
+}
+
+.animate-glow {
+  animation: glow 2s ease-in-out infinite;
+}
+
+/* ============================================
+   HOVER EFFECTS
+   ============================================ */
+
+.hover-lift {
+  transition: transform var(--duration-fast) ease, box-shadow var(--duration-fast) ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.hover-grow {
+  transition: transform var(--duration-fast) ease;
+}
+
+.hover-grow:hover {
+  transform: scale(1.05);
+}
+
+.hover-shine::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: left var(--duration-slow) ease;
+}
+
+.hover-shine:hover::before {
+  left: 100%;
+}
+
+.hover-glow {
+  transition: box-shadow var(--duration-base) ease;
+}
+
+.hover-glow:hover {
+  box-shadow: 0 0 20px rgba(244, 196, 48, 0.3),
+              0 0 40px rgba(244, 196, 48, 0.1);
+}
+
+.hover-tilt {
+  transition: transform var(--duration-base) ease;
+  transform-style: preserve-3d;
+}
+
+.hover-tilt:hover {
+  transform: perspective(1000px) rotateX(2deg) rotateY(2deg);
+}
+
+/* ============================================
+   LOADING STATES
+   ============================================ */
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--bg-tertiary) 25%,
+    var(--bg-hover) 50%,
+    var(--bg-tertiary) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+  border-radius: var(--radius-md);
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid var(--border-primary);
+  border-top-color: var(--royal-gold-500);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.spinner-sm {
+  width: 20px;
+  height: 20px;
+  border-width: 2px;
+}
+
+.spinner-lg {
+  width: 60px;
+  height: 60px;
+  border-width: 6px;
+}
+
+.dots-loader {
+  display: inline-flex;
+  gap: var(--space-2);
+}
+
+.dots-loader span {
+  width: 8px;
+  height: 8px;
+  background: var(--royal-gold-500);
+  border-radius: 50%;
+  animation: bounce 1.4s infinite ease-in-out both;
+}
+
+.dots-loader span:nth-child(1) {
+  animation-delay: -0.32s;
+}
+
+.dots-loader span:nth-child(2) {
+  animation-delay: -0.16s;
+}
+
+/* ============================================
+   PAGE TRANSITIONS
+   ============================================ */
+
+.page-enter {
+  animation: fadeIn var(--duration-base) ease;
+}
+
+.page-exit {
+  animation: fadeOut var(--duration-base) ease;
+}
+
+/* Staggered list animation */
+.stagger-list > * {
+  animation: slideInUp var(--duration-base) ease;
+  animation-fill-mode: both;
+}
+
+.stagger-list > *:nth-child(1) { animation-delay: 0.05s; }
+.stagger-list > *:nth-child(2) { animation-delay: 0.1s; }
+.stagger-list > *:nth-child(3) { animation-delay: 0.15s; }
+.stagger-list > *:nth-child(4) { animation-delay: 0.2s; }
+.stagger-list > *:nth-child(5) { animation-delay: 0.25s; }
+.stagger-list > *:nth-child(6) { animation-delay: 0.3s; }
+.stagger-list > *:nth-child(7) { animation-delay: 0.35s; }
+.stagger-list > *:nth-child(8) { animation-delay: 0.4s; }
+
+/* ============================================
+   CHESS-SPECIFIC ANIMATIONS
+   ============================================ */
+
+/* Piece move animation */
+.piece-moving {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Piece capture */
+.piece-captured {
+  animation: captureSquish 0.4s ease forwards;
+}
+
+/* Square highlight on move */
+.square-highlight {
+  position: relative;
+}
+
+.square-highlight::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--board-highlight);
+  opacity: 0;
+  transition: opacity var(--duration-fast) ease;
+}
+
+.square-highlight.active::after {
+  opacity: 0.4;
+}
+
+/* Check indicator */
+.king-in-check {
+  animation: checkPulse 1.5s ease infinite;
+}
+
+/* Move suggestion hint */
+.move-hint {
+  position: relative;
+}
+
+.move-hint::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 30%;
+  height: 30%;
+  background: var(--royal-gold-500);
+  border-radius: 50%;
+  opacity: 0.6;
+  animation: pulse 1.5s ease infinite;
+}
+
+/* Promotion selection animation */
+.promotion-popup {
+  animation: scaleIn var(--duration-base) cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Timer warning */
+.timer-warning {
+  animation: pulse 1s ease infinite;
+  color: var(--error);
+}
+
+/* ============================================
+   NOTIFICATION ANIMATIONS
+   ============================================ */
+
+.notification-enter {
+  animation: slideInRight var(--duration-base) cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.notification-exit {
+  animation: slideInRight var(--duration-base) cubic-bezier(0.4, 0, 0.2, 1) reverse;
+}
+
+/* Success checkmark animation */
+@keyframes drawCheck {
+  0% {
+    stroke-dashoffset: 100;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+.success-check {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: drawCheck 0.6s ease forwards;
+}
+
+/* ============================================
+   INTERACTIVE FEEDBACK
+   ============================================ */
+
+/* Ripple effect */
+.ripple {
+  position: relative;
+  overflow: hidden;
+}
+
+.ripple::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s ease, height 0.6s ease;
+}
+
+.ripple:active::after {
+  width: 300px;
+  height: 300px;
+}
+
+/* Press down effect */
+.press-down:active {
+  transform: scale(0.95);
+  transition: transform 0.1s ease;
+}
+
+/* Smooth color transition */
+.smooth-color {
+  transition: color var(--duration-base) ease,
+              background-color var(--duration-base) ease,
+              border-color var(--duration-base) ease;
+}
+
+/* ============================================
+   SCROLL ANIMATIONS
+   ============================================ */
+
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity var(--duration-slow) ease,
+              transform var(--duration-slow) ease;
+}
+
+.reveal-on-scroll.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Parallax effect */
+.parallax {
+  transition: transform 0.1s ease-out;
+}
+
+/* ============================================
+   FOCUS ANIMATIONS
+   ============================================ */
+
+.focus-ring {
+  transition: box-shadow var(--duration-fast) ease;
+}
+
+.focus-ring:focus-visible {
+  box-shadow: 0 0 0 3px rgba(244, 196, 48, 0.3);
+  animation: pulse 1s ease;
+}
+
+/* ============================================
+   PREMIUM GRADIENT ANIMATIONS
+   ============================================ */
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animated-gradient {
+  background-size: 200% 200%;
+  animation: gradientShift 3s ease infinite;
+}
+
+/* ============================================
+   CHESS BOARD SETUP ANIMATION
+   ============================================ */
+
+@keyframes setupPiece {
+  0% {
+    transform: translateY(-100px) scale(0.5);
+    opacity: 0;
+  }
+  60% {
+    transform: translateY(10px) scale(1.1);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+.piece-setup {
+  animation: setupPiece 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Stagger pieces on initial board load */
+.board-setup .piece:nth-child(1) { animation-delay: 0.05s; }
+.board-setup .piece:nth-child(2) { animation-delay: 0.1s; }
+.board-setup .piece:nth-child(3) { animation-delay: 0.15s; }
+.board-setup .piece:nth-child(4) { animation-delay: 0.2s; }
+.board-setup .piece:nth-child(5) { animation-delay: 0.25s; }
+.board-setup .piece:nth-child(6) { animation-delay: 0.3s; }
+.board-setup .piece:nth-child(7) { animation-delay: 0.35s; }
+.board-setup .piece:nth-child(8) { animation-delay: 0.4s; }
+
+/* ============================================
+   ACCESSIBILITY - REDUCED MOTION
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .hover-lift:hover,
+  .hover-grow:hover,
+  .hover-tilt:hover {
+    transform: none !important;
+  }
+}

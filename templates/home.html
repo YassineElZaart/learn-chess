@@ -1,0 +1,231 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Chess Academy{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section style="background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%); padding: var(--space-20) 0; position: relative; overflow: hidden;">
+    <!-- Decorative chess piece background -->
+    <div style="position: absolute; top: -50px; right: -50px; font-size: 20rem; opacity: 0.03; pointer-events: none;">♜</div>
+    <div style="position: absolute; bottom: -80px; left: -80px; font-size: 25rem; opacity: 0.03; pointer-events: none;">♞</div>
+
+    <div class="container" style="position: relative; z-index: 1;">
+        <div style="max-width: 900px; margin: 0 auto; text-align: center;">
+            <h1 class="font-heading animate-fade-in" style="font-size: var(--text-5xl); margin-bottom: var(--space-6); color: var(--text-primary); line-height: var(--line-height-tight);">
+                ♟️ Master Chess with <span style="background: linear-gradient(135deg, var(--chess-wood-500), var(--royal-gold-600)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Premium Training</span>
+            </h1>
+            <p class="animate-fade-in" style="font-size: var(--text-xl); color: var(--text-secondary); margin-bottom: var(--space-10); max-width: 700px; margin-left: auto; margin-right: auto; animation-delay: 0.1s;">
+                Elevate your game through interactive lessons, strategic position practice, and real-time multiplayer battles.
+            </p>
+
+            <!-- CTA Buttons -->
+            <div class="animate-fade-in" style="display: flex; gap: var(--space-4); justify-content: center; flex-wrap: wrap; animation-delay: 0.2s;">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'lessons:lesson_list' %}" class="btn btn-primary btn-lg hover-lift">
+                        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                        </svg>
+                        Start Learning
+                    </a>
+                    <a href="{% url 'board_editor:editor' %}" class="btn btn-secondary btn-lg hover-lift">
+                        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                        </svg>
+                        Board Editor
+                    </a>
+                    <a href="{% url 'gameplay:create_game' %}" class="btn btn-accent btn-lg hover-lift">
+                        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                        Quick Play
+                    </a>
+                {% else %}
+                    <a href="{% url 'accounts:register' %}" class="btn btn-primary btn-xl hover-lift">
+                        Get Started Free
+                    </a>
+                    <a href="{% url 'accounts:login' %}" class="btn btn-secondary btn-xl hover-lift">
+                        Login
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Grid -->
+<section style="padding: var(--space-20) 0; background: var(--bg-secondary);">
+    <div class="container">
+        <div style="max-width: 1200px; margin: 0 auto;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--space-6);">
+                <!-- Learn -->
+                <div class="card card-premium hover-lift animate-scale-in" style="animation-delay: 0.1s;">
+                    <div style="font-size: 4rem; margin-bottom: var(--space-4); text-align: center;">📚</div>
+                    <h3 class="card-title" style="text-align: center; margin-bottom: var(--space-3);">Learn</h3>
+                    <p style="color: var(--text-secondary); text-align: center; line-height: var(--line-height-relaxed);">
+                        Interactive lessons covering everything from opening principles to endgame mastery
+                    </p>
+                </div>
+
+                <!-- Practice -->
+                <div class="card card-premium hover-lift animate-scale-in" style="animation-delay: 0.2s;">
+                    <div style="font-size: 4rem; margin-bottom: var(--space-4); text-align: center;">🎯</div>
+                    <h3 class="card-title" style="text-align: center; margin-bottom: var(--space-3);">Practice</h3>
+                    <p style="color: var(--text-secondary); text-align: center; line-height: var(--line-height-relaxed);">
+                        Master tactical positions with guided sequences and detailed explanations
+                    </p>
+                </div>
+
+                <!-- Play -->
+                <div class="card card-premium hover-lift animate-scale-in" style="animation-delay: 0.3s;">
+                    <div style="font-size: 4rem; margin-bottom: var(--space-4); text-align: center;">🎮</div>
+                    <h3 class="card-title" style="text-align: center; margin-bottom: var(--space-3);">Play</h3>
+                    <p style="color: var(--text-secondary); text-align: center; line-height: var(--line-height-relaxed);">
+                        Challenge friends in real-time games from custom or standard positions
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Platform Features Section -->
+<section style="padding: var(--space-20) 0;">
+    <div class="container">
+        <div style="max-width: 1200px; margin: 0 auto;">
+            <h2 class="font-heading" style="font-size: var(--text-4xl); text-align: center; margin-bottom: var(--space-12); color: var(--text-primary);">
+                Everything You Need to Excel
+            </h2>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: var(--space-8);">
+                <!-- Structured Curriculum -->
+                <div class="card hover-lift">
+                    <div class="card-header">
+                        <h3 style="display: flex; align-items: center; gap: var(--space-3); color: var(--chess-wood-600); font-size: var(--text-xl);">
+                            <svg style="width: 2rem; height: 2rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                            </svg>
+                            Structured Curriculum
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <ul style="list-style: none; padding: 0; margin: 0;">
+                            <li style="padding: var(--space-2) 0; display: flex; align-items: center; gap: var(--space-2);">
+                                <span style="color: var(--success);">✓</span>
+                                <span style="color: var(--text-secondary);">Lessons organized by difficulty level</span>
+                            </li>
+                            <li style="padding: var(--space-2) 0; display: flex; align-items: center; gap: var(--space-2);">
+                                <span style="color: var(--success);">✓</span>
+                                <span style="color: var(--text-secondary);">Topics with multiple practice positions</span>
+                            </li>
+                            <li style="padding: var(--space-2) 0; display: flex; align-items: center; gap: var(--space-2);">
+                                <span style="color: var(--success);">✓</span>
+                                <span style="color: var(--text-secondary);">Move sequences with explanations</span>
+                            </li>
+                            <li style="padding: var(--space-2) 0; display: flex; align-items: center; gap: var(--space-2);">
+                                <span style="color: var(--success);">✓</span>
+                                <span style="color: var(--text-secondary);">Track your progress across all lessons</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Board Editor -->
+                <div class="card hover-lift">
+                    <div class="card-header">
+                        <h3 style="display: flex; align-items: center; gap: var(--space-3); color: var(--chess-wood-600); font-size: var(--text-xl);">
+                            <svg style="width: 2rem; height: 2rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                            </svg>
+                            Board Editor
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <ul style="list-style: none; padding: 0; margin: 0;">
+                            <li style="padding: var(--space-2) 0; display: flex; align-items: center; gap: var(--space-2);">
+                                <span style="color: var(--success);">✓</span>
+                                <span style="color: var(--text-secondary);">Create custom chess positions</span>
+                            </li>
+                            <li style="padding: var(--space-2) 0; display: flex; align-items: center; gap: var(--space-2);">
+                                <span style="color: var(--success);">✓</span>
+                                <span style="color: var(--text-secondary);">Intuitive drag and drop interface</span>
+                            </li>
+                            <li style="padding: var(--space-2) 0; display: flex; align-items: center; gap: var(--space-2);">
+                                <span style="color: var(--success);">✓</span>
+                                <span style="color: var(--text-secondary);">Export positions as FEN strings</span>
+                            </li>
+                            <li style="padding: var(--space-2) 0; display: flex; align-items: center; gap: var(--space-2);">
+                                <span style="color: var(--success);">✓</span>
+                                <span style="color: var(--text-secondary);">Generate shareable game links</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Real-Time Gameplay -->
+                <div class="card hover-lift">
+                    <div class="card-header">
+                        <h3 style="display: flex; align-items: center; gap: var(--space-3); color: var(--chess-wood-600); font-size: var(--text-xl);">
+                            <svg style="width: 2rem; height: 2rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                            </svg>
+                            Real-Time Gameplay
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <ul style="list-style: none; padding: 0; margin: 0;">
+                            <li style="padding: var(--space-2) 0; display: flex; align-items: center; gap: var(--space-2);">
+                                <span style="color: var(--success);">✓</span>
+                                <span style="color: var(--text-secondary);">Live games with WebSocket support</span>
+                            </li>
+                            <li style="padding: var(--space-2) 0; display: flex; align-items: center; gap: var(--space-2);">
+                                <span style="color: var(--success);">✓</span>
+                                <span style="color: var(--text-secondary);">Instant move validation</span>
+                            </li>
+                            <li style="padding: var(--space-2) 0; display: flex; align-items: center; gap: var(--space-2);">
+                                <span style="color: var(--success);">✓</span>
+                                <span style="color: var(--text-secondary);">Play from any custom position</span>
+                            </li>
+                            <li style="padding: var(--space-2) 0; display: flex; align-items: center; gap: var(--space-2);">
+                                <span style="color: var(--success);">✓</span>
+                                <span style="color: var(--text-secondary);">Complete move history tracking</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Progress Tracking -->
+                <div class="card hover-lift">
+                    <div class="card-header">
+                        <h3 style="display: flex; align-items: center; gap: var(--space-3); color: var(--chess-wood-600); font-size: var(--text-xl);">
+                            <svg style="width: 2rem; height: 2rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                            </svg>
+                            Progress Tracking
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <ul style="list-style: none; padding: 0; margin: 0;">
+                            <li style="padding: var(--space-2) 0; display: flex; align-items: center; gap: var(--space-2);">
+                                <span style="color: var(--success);">✓</span>
+                                <span style="color: var(--text-secondary);">Mark positions as completed</span>
+                            </li>
+                            <li style="padding: var(--space-2) 0; display: flex; align-items: center; gap: var(--space-2);">
+                                <span style="color: var(--success);">✓</span>
+                                <span style="color: var(--text-secondary);">View completion percentages</span>
+                            </li>
+                            <li style="padding: var(--space-2) 0; display: flex; align-items: center; gap: var(--space-2);">
+                                <span style="color: var(--success);">✓</span>
+                                <span style="color: var(--text-secondary);">Track game history and outcomes</span>
+                            </li>
+                            <li style="padding: var(--space-2) 0; display: flex; align-items: center; gap: var(--space-2);">
+                                <span style="color: var(--success);">✓</span>
+                                <span style="color: var(--text-secondary);">Personal learning dashboard</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

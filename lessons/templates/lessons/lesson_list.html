@@ -1,0 +1,232 @@
+{% extends "base.html" %}
+{% load lesson_extras %}
+
+{% block title %}Lessons - Chess Academy{% endblock %}
+
+{% block content %}
+<section style="min-height: 100vh; background: var(--bg-secondary); padding: var(--space-10) 0;">
+    <div class="container">
+        <div style="max-width: 1000px; margin: 0 auto;">
+            <!-- Header -->
+            <div class="animate-fade-in" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-8); flex-wrap: wrap; gap: var(--space-4);">
+                <div>
+                    <h1 class="font-heading" style="font-size: var(--text-4xl); color: var(--text-primary); margin: 0 0 var(--space-2) 0;">
+                        📚 Chess Lessons
+                    </h1>
+                    <p style="color: var(--text-secondary);">Master the game through structured learning</p>
+                </div>
+                <div style="display: flex; gap: var(--space-3); flex-wrap: wrap;">
+                    {% if user.is_staff %}
+                    <a href="{% url 'lessons:lesson_create' %}" class="btn btn-success btn-lg hover-lift">
+                        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                        </svg>
+                        Create Lesson
+                    </a>
+                    {% endif %}
+                    <a href="{% url 'lessons:user_progress' %}" class="btn btn-secondary btn-lg hover-lift">
+                        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                        </svg>
+                        View Progress
+                    </a>
+                </div>
+            </div>
+
+            <!-- Lessons List -->
+            <div id="lessons-list" style="display: flex; flex-direction: column; gap: var(--space-6);">
+                {% for lesson in lessons %}
+                <div class="card hover-lift animate-scale-in lesson-item{% if not lesson.is_enabled %} lesson-disabled{% endif %}" data-lesson-id="{{ lesson.id }}" style="animation-delay: {{ forloop.counter0|add:'0.05' }}s;{% if not lesson.is_enabled %} opacity: 0.6; border: 2px dashed var(--border-secondary);{% endif %}">
+                    <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-6); flex-wrap: wrap;">
+                        <!-- Drag Handle (Teacher Only) -->
+                        {% if user.is_staff %}
+                        <div class="drag-handle" style="cursor: grab; padding: var(--space-2); color: var(--text-tertiary); display: flex; align-items: center;">
+                            <svg style="width: 1.5rem; height: 1.5rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16" />
+                            </svg>
+                        </div>
+                        {% endif %}
+
+                        <!-- Lesson Content -->
+                        <div style="flex: 1; min-width: 300px;">
+                            <!-- Title & Badge -->
+                            <div style="display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-3); flex-wrap: wrap;">
+                                <span style="font-size: var(--text-3xl); font-weight: var(--font-bold); color: var(--text-tertiary); font-family: var(--font-heading);">
+                                    {{ lesson.order }}
+                                </span>
+                                <h2 class="font-heading" style="font-size: var(--text-2xl); font-weight: var(--font-bold); color: var(--text-primary); margin: 0;">
+                                    {{ lesson.title }}
+                                </h2>
+                                <span class="badge {% if lesson.difficulty_level == 'beginner' %}badge-success{% elif lesson.difficulty_level == 'intermediate' %}badge-warning{% else %}badge-error{% endif %}">
+                                    {{ lesson.get_difficulty_level_display }}
+                                </span>
+                                {% if not lesson.is_enabled %}
+                                <span class="badge badge-secondary" style="display: flex; align-items: center; gap: var(--space-1);">
+                                    <svg style="width: 1rem; height: 1rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                    </svg>
+                                    Disabled
+                                </span>
+                                {% endif %}
+                            </div>
+
+                            <!-- Description -->
+                            <p style="color: var(--text-secondary); margin-bottom: var(--space-4); line-height: var(--line-height-relaxed);">
+                                {{ lesson.description }}
+                            </p>
+
+                            <!-- Stats -->
+                            <div style="display: flex; align-items: center; gap: var(--space-4); font-size: var(--text-sm); color: var(--text-tertiary); margin-bottom: var(--space-4);">
+                                <span style="display: flex; align-items: center; gap: var(--space-1);">
+                                    <svg style="width: 1rem; height: 1rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                                    </svg>
+                                    {{ lesson.topics_count }} topic{{ lesson.topics_count|pluralize }}
+                                </span>
+                            </div>
+
+                            <!-- Progress Bar -->
+                            {% with progress=user_progress|get_item:lesson.id %}
+                            <div>
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-2);">
+                                    <span style="font-size: var(--text-sm); font-weight: var(--font-semibold); color: var(--text-secondary);">
+                                        Progress
+                                    </span>
+                                    <span style="font-size: var(--text-sm); font-weight: var(--font-bold); color: var(--chess-wood-600);">
+                                        {{ progress }}%
+                                    </span>
+                                </div>
+                                <div style="width: 100%; background: var(--bg-tertiary); border-radius: var(--radius-full); height: 8px; overflow: hidden; border: 1px solid var(--border-primary);">
+                                    <div style="background: linear-gradient(90deg, var(--royal-gold-500), var(--royal-gold-600)); height: 100%; border-radius: var(--radius-full); transition: width var(--duration-slow) ease; width: {{ progress }}%; box-shadow: var(--shadow-gold);"></div>
+                                </div>
+                            </div>
+                            {% endwith %}
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div style="display: flex; flex-direction: column; gap: var(--space-3); align-items: flex-end;">
+                            <a href="{% url 'lessons:lesson_detail' lesson.id %}" class="btn btn-primary btn-lg hover-lift">
+                                <span>Start Learning</span>
+                                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                                </svg>
+                            </a>
+
+                            <!-- Teacher Controls -->
+                            {% if user.is_staff %}
+                            <div style="display: flex; gap: var(--space-2); flex-wrap: wrap;">
+                                <button class="btn btn-sm btn-secondary hover-lift toggle-lesson" data-lesson-id="{{ lesson.id }}" title="{% if lesson.is_enabled %}Disable{% else %}Enable{% endif %} lesson">
+                                    <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        {% if lesson.is_enabled %}
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                        {% else %}
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                                        {% endif %}
+                                    </svg>
+                                </button>
+                                <a href="{% url 'lessons:lesson_update' pk=lesson.id %}" class="btn btn-sm btn-info hover-lift" title="Edit lesson">
+                                    <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                    </svg>
+                                </a>
+                                <a href="{% url 'lessons:lesson_delete' pk=lesson.id %}" class="btn btn-sm btn-error hover-lift" title="Delete lesson">
+                                    <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                </a>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <!-- Empty State -->
+                <div class="card animate-scale-in" style="text-align: center; padding: var(--space-12); background: var(--bg-accent); border: 2px solid var(--border-accent);">
+                    <div style="font-size: 4rem; margin-bottom: var(--space-4);">📚</div>
+                    <h3 style="font-size: var(--text-2xl); font-weight: var(--font-bold); color: var(--text-primary); margin-bottom: var(--space-2);">
+                        No Lessons Available
+                    </h3>
+                    <p style="color: var(--text-secondary); max-width: 400px; margin-left: auto; margin-right: auto;">
+                        Check back soon for exciting chess lessons!
+                    </p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+
+{% if user.is_staff %}
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+<script>
+// Drag and drop reordering
+document.addEventListener('DOMContentLoaded', function() {
+    const lessonsList = document.getElementById('lessons-list');
+
+    if (lessonsList) {
+        new Sortable(lessonsList, {
+            handle: '.drag-handle',
+            animation: 150,
+            ghostClass: 'sortable-ghost',
+            onEnd: function(evt) {
+                const lessonIds = Array.from(lessonsList.querySelectorAll('.lesson-item')).map(item => item.dataset.lessonId);
+
+                // Send reorder request
+                fetch('{% url "lessons:reorder_lessons" %}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: JSON.stringify({ lesson_ids: lessonIds })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        console.log('Lessons reordered successfully');
+                    } else {
+                        alert('Error reordering lessons: ' + (data.error || 'Unknown error'));
+                        location.reload();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error reordering lessons');
+                    location.reload();
+                });
+            }
+        });
+    }
+
+    // Toggle lesson enabled/disabled
+    document.querySelectorAll('.toggle-lesson').forEach(button => {
+        button.addEventListener('click', function() {
+            const lessonId = this.dataset.lessonId;
+            const lessonCard = this.closest('.lesson-item');
+
+            fetch(`/lessons/lesson/${lessonId}/toggle/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert('Error toggling lesson: ' + (data.message || 'Unknown error'));
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error toggling lesson');
+            });
+        });
+    });
+});
+</script>
+{% endif %}
+{% endblock %}

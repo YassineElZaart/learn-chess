@@ -1,0 +1,163 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#ffffff">
+    <title>{% block title %}Chess Platform{% endblock %}</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <!-- Custom CSS - Load in order -->
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/themes.css' %}">
+    <link rel="stylesheet" href="{% static 'css/components.css' %}">
+    <link rel="stylesheet" href="{% static 'css/animations.css' %}">
+    <link rel="stylesheet" href="{% static 'css/board-annotations.css' %}">
+    <link rel="stylesheet" href="{% static 'css/teacher_ui.css' %}">
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+
+    <!-- Theme Manager - Load before body to prevent FOUC -->
+    <script src="{% static 'js/theme-manager.js' %}"></script>
+
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-glass">
+        <div class="container navbar-container">
+            <!-- Brand -->
+            <a href="{% url 'home' %}" class="navbar-brand">
+                <span style="font-size: 2rem;">♟️</span>
+                <span>Chess Academy</span>
+            </a>
+
+            <!-- Main Navigation -->
+            {% if user.is_authenticated %}
+            <ul class="navbar-menu">
+                <li class="navbar-item">
+                    <a href="{% url 'lessons:lesson_list' %}" class="navbar-link">
+                        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                        </svg>
+                        Lessons
+                    </a>
+                </li>
+                <li class="navbar-item">
+                    <a href="{% url 'board_editor:editor' %}" class="navbar-link">
+                        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                        </svg>
+                        Board Editor
+                    </a>
+                </li>
+                <li class="navbar-item">
+                    <a href="{% url 'gameplay:game_list' %}" class="navbar-link">
+                        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        My Games
+                    </a>
+                </li>
+            </ul>
+            {% endif %}
+
+            <!-- Right Side Actions -->
+            <div class="navbar-menu">
+                <!-- Dark Mode Toggle -->
+                <button id="theme-toggle" class="btn-icon btn-ghost" aria-label="Toggle dark mode" title="Toggle dark mode">
+                    <svg class="icon sun-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="display: none;">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                    <svg class="icon moon-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                    </svg>
+                </button>
+
+                {% if user.is_authenticated %}
+                    <!-- User Menu -->
+                    <div class="player-card" style="padding: var(--space-2) var(--space-3); border: none; background: transparent;">
+                        <div class="player-avatar" style="width: 2rem; height: 2rem; font-size: var(--text-sm);">
+                            {{ user.username|slice:":1"|upper }}
+                        </div>
+                        <div style="display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-1);">
+                            <span style="color: var(--text-primary); font-weight: var(--font-medium);">{{ user.username }}</span>
+                            {% if user.is_staff %}
+                            <span class="teacher-badge" style="font-size: 0.65rem;">
+                                <svg style="width: 0.75rem; height: 0.75rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                                </svg>
+                                Teacher
+                            </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <a href="{% url 'accounts:profile' %}" class="btn btn-secondary btn-sm">Profile</a>
+                    <a href="{% url 'accounts:logout' %}" class="btn btn-ghost btn-sm">Logout</a>
+                {% else %}
+                    <a href="{% url 'accounts:login' %}" class="btn btn-secondary btn-sm">Login</a>
+                    <a href="{% url 'accounts:register' %}" class="btn btn-primary btn-sm">Register</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <!-- Messages/Alerts -->
+    {% if messages %}
+    <div class="container" style="margin-top: var(--space-6);">
+        {% for message in messages %}
+        <div class="alert {% if message.tags == 'error' %}alert-error{% elif message.tags == 'success' %}alert-success{% elif message.tags == 'warning' %}alert-warning{% else %}alert-info{% endif %} animate-slide-in-down">
+            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                {% if message.tags == 'error' %}
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                {% elif message.tags == 'success' %}
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                {% elif message.tags == 'warning' %}
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                {% else %}
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                {% endif %}
+            </svg>
+            <div class="alert-content">
+                <div class="alert-message">{{ message }}</div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Main Content -->
+    <main class="animate-fade-in">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer style="background: var(--bg-card); border-top: 1px solid var(--border-primary); margin-top: var(--space-20); padding: var(--space-8) 0;">
+        <div class="container text-center">
+            <p style="color: var(--text-secondary); margin-bottom: var(--space-3);">
+                <span style="font-family: var(--font-heading); font-size: var(--text-lg); color: var(--text-primary);">♟️ Chess Academy</span>
+            </p>
+            <p style="color: var(--text-tertiary); font-size: var(--text-sm);">
+                &copy; 2024 Chess Platform. Built with Django & Channels.
+            </p>
+            <p style="color: var(--text-tertiary); font-size: var(--text-xs); margin-top: var(--space-2);">
+                Press <kbd style="padding: var(--space-1) var(--space-2); background: var(--bg-tertiary); border-radius: var(--radius-sm); font-family: var(--font-mono);">Ctrl + Shift + D</kbd> to toggle dark mode
+            </p>
+        </div>
+    </footer>
+
+    <!-- Initialize Theme Toggle -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Setup theme toggle button
+            window.setupThemeToggle('theme-toggle');
+        });
+    </script>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

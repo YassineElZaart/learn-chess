@@ -1,0 +1,165 @@
+/**
+ * Teacher UI Styles
+ * Styles for teacher management features (drag-drop, disabled items, etc.)
+ */
+
+/* Drag handle styling */
+.drag-handle {
+    transition: color var(--duration-fast) ease, transform var(--duration-fast) ease;
+}
+
+.drag-handle:hover {
+    color: var(--chess-wood-600) !important;
+    transform: scale(1.1);
+}
+
+.drag-handle:active {
+    cursor: grabbing !important;
+}
+
+/* Sortable ghost element (dragging preview) */
+.sortable-ghost {
+    opacity: 0.4;
+    background: var(--royal-gold-100);
+    border: 2px dashed var(--royal-gold-500) !important;
+}
+
+/* Disabled lesson/topic/position styling */
+.lesson-disabled,
+.topic-disabled,
+.position-disabled {
+    position: relative;
+}
+
+.lesson-disabled::before,
+.topic-disabled::before,
+.position-disabled::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 10px,
+        rgba(0, 0, 0, 0.02) 10px,
+        rgba(0, 0, 0, 0.02) 20px
+    );
+    pointer-events: none;
+    border-radius: var(--radius-lg);
+}
+
+/* Teacher badge/label */
+.teacher-badge {
+    background: linear-gradient(135deg, var(--royal-gold-500), var(--royal-gold-600));
+    color: white;
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-full);
+    font-size: var(--text-xs);
+    font-weight: var(--font-semibold);
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    box-shadow: var(--shadow-gold);
+}
+
+/* Teacher controls container */
+.teacher-controls {
+    display: flex;
+    gap: var(--space-2);
+    align-items: center;
+}
+
+/* Form validation styles */
+.form-label {
+    display: block;
+    font-weight: var(--font-semibold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-2);
+    font-size: var(--text-sm);
+}
+
+.form-error {
+    color: var(--color-error);
+    font-size: var(--text-sm);
+    margin-top: var(--space-1);
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+}
+
+.form-error::before {
+    content: '⚠';
+}
+
+/* Enhanced button styles for teacher actions */
+.btn-info {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: white;
+    border: none;
+}
+
+.btn-info:hover {
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+/* Success button variations */
+.btn-success {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    border: none;
+}
+
+.btn-success:hover {
+    background: linear-gradient(135deg, #059669, #047857);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
+}
+
+/* Smooth transitions for teacher UI elements */
+.lesson-item,
+.topic-item,
+.position-item {
+    transition: all var(--duration-base) ease;
+}
+
+.lesson-item:hover,
+.topic-item:hover,
+.position-item:hover {
+    transform: translateY(-2px);
+}
+
+/* Teacher dashboard link styling */
+.teacher-nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-4);
+    background: linear-gradient(135deg, var(--royal-gold-500), var(--royal-gold-600));
+    color: white;
+    text-decoration: none;
+    border-radius: var(--radius-lg);
+    font-weight: var(--font-semibold);
+    transition: all var(--duration-fast) ease;
+    box-shadow: var(--shadow-gold);
+}
+
+.teacher-nav-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(218, 165, 32, 0.4);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .drag-handle {
+        display: none;
+    }
+
+    .teacher-controls {
+        flex-wrap: wrap;
+    }
+}

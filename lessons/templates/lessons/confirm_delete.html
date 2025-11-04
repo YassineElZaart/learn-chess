@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}Delete {{ object_type }} - Chess Academy{% endblock %}
+
+{% block content %}
+<section style="min-height: 100vh; background: var(--bg-secondary); padding: var(--space-10) 0; display: flex; align-items: center;">
+    <div class="container">
+        <div style="max-width: 600px; margin: 0 auto;">
+            <!-- Warning Card -->
+            <div class="card animate-scale-in" style="border: 2px solid var(--color-error); background: linear-gradient(135deg, var(--bg-primary) 0%, rgba(239, 68, 68, 0.05) 100%);">
+                <div style="text-align: center; margin-bottom: var(--space-6);">
+                    <div style="display: inline-flex; align-items: center; justify-content: center; width: 64px; height: 64px; background: var(--color-error); border-radius: 50%; margin-bottom: var(--space-4);">
+                        <svg style="width: 32px; height: 32px; color: white;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                    </div>
+                    <h1 class="font-heading" style="font-size: var(--text-3xl); color: var(--text-primary); margin: 0 0 var(--space-2) 0;">
+                        Delete {{ object_type }}?
+                    </h1>
+                    <p style="color: var(--text-secondary); font-size: var(--text-lg);">
+                        This action cannot be undone
+                    </p>
+                </div>
+
+                <!-- Object Info -->
+                <div style="background: var(--bg-tertiary); border-radius: var(--radius-lg); padding: var(--space-4); margin-bottom: var(--space-6); border: 1px solid var(--border-secondary);">
+                    <div style="font-size: var(--text-sm); color: var(--text-tertiary); margin-bottom: var(--space-1);">
+                        You are about to delete:
+                    </div>
+                    <div style="font-size: var(--text-lg); font-weight: var(--font-semibold); color: var(--text-primary);">
+                        {{ object }}
+                    </div>
+                </div>
+
+                <!-- Warning Message -->
+                <div class="alert alert-warning" style="margin-bottom: var(--space-6);">
+                    <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                    <div>
+                        {% if object_type == 'Lesson' %}
+                        Deleting this lesson will also delete all its topics and positions. All student progress for this lesson will be lost.
+                        {% elif object_type == 'Topic' %}
+                        Deleting this topic will also delete all its positions. All student progress for these positions will be lost.
+                        {% elif object_type == 'Position' %}
+                        Deleting this position will also delete all its move sequences. Student progress for this position will be lost.
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <form method="post">
+                    {% csrf_token %}
+                    <div style="display: flex; gap: var(--space-3); flex-wrap: wrap;">
+                        <button type="submit" class="btn btn-error btn-lg hover-lift" style="flex: 1;">
+                            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                            Yes, Delete {{ object_type }}
+                        </button>
+                        <a href="{% if cancel_id %}{% if cancel_url == 'lessons:lesson_detail' %}{% url cancel_url lesson_id=cancel_id %}{% elif cancel_url == 'lessons:topic_detail' %}{% url cancel_url topic_id=cancel_id %}{% else %}{% url cancel_url position_id=cancel_id %}{% endif %}{% else %}{% url cancel_url %}{% endif %}" class="btn btn-secondary btn-lg hover-lift" style="flex: 1;">
+                            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                            Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

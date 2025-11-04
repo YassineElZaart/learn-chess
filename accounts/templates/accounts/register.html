@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}Register - Chess Academy{% endblock %}
+
+{% block content %}
+<section style="min-height: 100vh; background: var(--bg-secondary); padding: var(--space-10) 0; display: flex; align-items: center;">
+    <div class="container">
+        <div style="max-width: 480px; margin: 0 auto;">
+            <!-- Card -->
+            <div class="card card-premium animate-scale-in">
+                <!-- Header -->
+                <div style="text-align: center; margin-bottom: var(--space-8);">
+                    <div style="font-size: 4rem; margin-bottom: var(--space-4);">♚</div>
+                    <h1 class="font-heading" style="font-size: var(--text-3xl); color: var(--text-primary); margin: 0 0 var(--space-2) 0;">
+                        Join Chess Academy
+                    </h1>
+                    <p style="color: var(--text-secondary);">Create your account and start learning</p>
+                </div>
+
+                <!-- Form -->
+                <form method="post" style="display: flex; flex-direction: column; gap: var(--space-5);">
+                    {% csrf_token %}
+
+                    <!-- Username Field -->
+                    <div class="form-group">
+                        <label for="id_username" class="form-label required">Username</label>
+                        {{ form.username }}
+                        {% if form.username.errors %}
+                        <span class="form-error">{{ form.username.errors.0 }}</span>
+                        {% else %}
+                        <span class="form-help">Choose a unique username for your account</span>
+                        {% endif %}
+                    </div>
+
+                    <!-- Password Field -->
+                    <div class="form-group">
+                        <label for="id_password1" class="form-label required">Password</label>
+                        {{ form.password1 }}
+                        {% if form.password1.errors %}
+                        <span class="form-error">{{ form.password1.errors.0 }}</span>
+                        {% else %}
+                        <span class="form-help">Must be at least 8 characters long</span>
+                        {% endif %}
+                    </div>
+
+                    <!-- Confirm Password Field -->
+                    <div class="form-group">
+                        <label for="id_password2" class="form-label required">Confirm Password</label>
+                        {{ form.password2 }}
+                        {% if form.password2.errors %}
+                        <span class="form-error">{{ form.password2.errors.0 }}</span>
+                        {% else %}
+                        <span class="form-help">Re-enter your password to confirm</span>
+                        {% endif %}
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn btn-accent btn-lg hover-lift" style="width: 100%;">
+                        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                        </svg>
+                        Create Account
+                    </button>
+                </form>
+
+                <!-- Login Link -->
+                <div style="margin-top: var(--space-6); text-align: center; padding-top: var(--space-6); border-top: 1px solid var(--border-primary);">
+                    <p style="color: var(--text-secondary);">
+                        Already have an account?
+                        <a href="{% url 'accounts:login' %}" style="color: var(--chess-wood-600); font-weight: var(--font-semibold); text-decoration: none; transition: color var(--duration-fast) ease;">
+                            Login here
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

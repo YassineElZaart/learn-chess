@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python manage.py shell:*)",
+      "Bash(dir /S /B C:UsersyusyuVsCodelearnchess*.html)",
+      "Bash(findstr:*)",
+      "Bash(find:*)",
+      "Bash(nul)",
+      "Bash(cat:*)",
+      "Bash(python manage.py:*)",
+      "Bash(\"venv/Scripts/python.exe\" manage.py makemigrations:*)",
+      "Bash(\"venv/Scripts/python.exe\" manage.py migrate)",
+      "Bash(dir /S /B \"C:\\Users\\yusyu\\VsCode\\learnchess\\core\\migrations\\*.py\")",
+      "Bash(timeout 120 tail:*)",
+      "WebSearch"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

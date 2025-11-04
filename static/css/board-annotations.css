@@ -1,0 +1,149 @@
+/**
+ * Chess Board Annotations CSS
+ * Styling for legal moves, circles, and arrows
+ */
+
+/* ========== Legal Move Dots ========== */
+
+.legal-move-dot {
+    fill: var(--royal-gold-500, #f4c430);
+    opacity: 0.4;
+    transition: opacity var(--duration-fast) ease;
+    /* Override parent SVG's pointer-events: none to make dots clickable */
+    pointer-events: all !important;
+    cursor: pointer;
+}
+
+.legal-move-dot:hover {
+    opacity: 0.6;
+}
+
+/* Capture moves - larger circles with ring */
+.legal-move-capture {
+    fill: none;
+    stroke: var(--royal-gold-500, #f4c430);
+    stroke-width: 4;
+    opacity: 0.5;
+}
+
+.legal-move-capture:hover {
+    opacity: 0.7;
+}
+
+/* ========== Circle Annotations ========== */
+
+.annotation-circle {
+    fill: none;
+    stroke-width: 5;
+    opacity: 0.8;
+    transition: opacity var(--duration-fast) ease;
+}
+
+.annotation-circle:hover {
+    opacity: 1;
+}
+
+/* Circle Colors */
+.annotation-circle.annotation-green {
+    stroke: rgba(15, 195, 65, 0.9);
+}
+
+.annotation-circle.annotation-red {
+    stroke: rgba(235, 97, 80, 0.9);
+}
+
+.annotation-circle.annotation-blue {
+    stroke: rgba(85, 145, 255, 0.9);
+}
+
+.annotation-circle.annotation-yellow {
+    stroke: rgba(255, 193, 7, 0.9);
+}
+
+/* ========== Arrow Annotations ========== */
+
+.annotation-arrow line {
+    stroke-width: 8;
+    opacity: 0.8;
+    stroke-linecap: round;
+    transition: opacity var(--duration-fast) ease;
+}
+
+.annotation-arrow:hover line {
+    opacity: 1;
+}
+
+/* Arrow Colors */
+.annotation-arrow.annotation-green line {
+    stroke: rgba(15, 195, 65, 0.9);
+}
+
+.annotation-arrow.annotation-red line {
+    stroke: rgba(235, 97, 80, 0.9);
+}
+
+.annotation-arrow.annotation-blue line {
+    stroke: rgba(85, 145, 255, 0.9);
+}
+
+.annotation-arrow.annotation-yellow line {
+    stroke: rgba(255, 193, 7, 0.9);
+}
+
+/* ========== Arrowhead Markers ========== */
+
+.arrowhead-green {
+    fill: rgba(15, 195, 65, 0.9);
+}
+
+.arrowhead-red {
+    fill: rgba(235, 97, 80, 0.9);
+}
+
+.arrowhead-blue {
+    fill: rgba(85, 145, 255, 0.9);
+}
+
+.arrowhead-yellow {
+    fill: rgba(255, 193, 7, 0.9);
+}
+
+/* ========== Responsive Adjustments ========== */
+
+@media (max-width: 768px) {
+    .legal-move-dot {
+        opacity: 0.5;
+    }
+
+    .annotation-circle {
+        stroke-width: 4;
+    }
+
+    .annotation-arrow line {
+        stroke-width: 6;
+    }
+}
+
+/* ========== Dark Mode Adjustments ========== */
+
+:root[data-theme="dark"] .legal-move-dot {
+    opacity: 0.5;
+}
+
+:root[data-theme="dark"] .legal-move-capture {
+    opacity: 0.6;
+}
+
+:root[data-theme="dark"] .annotation-circle,
+:root[data-theme="dark"] .annotation-arrow line {
+    opacity: 0.9;
+}
+
+/* ========== Overlay Container ========== */
+
+#board-annotations-overlay {
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}

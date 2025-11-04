@@ -1,0 +1,479 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Board Editor - Chess Academy{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.css">
+<style>
+    /* Chess-themed Board Editor Styles */
+    .editor-container {
+        display: grid;
+        grid-template-columns: 220px 1fr 320px;
+        gap: var(--space-6);
+        align-items: start;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    @media (max-width: 1200px) {
+        .editor-container {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .piece-selector {
+        background: linear-gradient(135deg, var(--chess-wood-500), var(--chess-wood-700));
+        border-radius: var(--radius-xl);
+        padding: var(--space-5);
+        box-shadow: var(--shadow-xl);
+        border: 2px solid rgba(255, 255, 255, 0.1);
+        position: sticky;
+        top: var(--space-4);
+    }
+
+    .piece-section-title {
+        color: white;
+        font-weight: var(--font-bold);
+        text-align: center;
+        margin-bottom: var(--space-3);
+        font-size: var(--text-sm);
+        letter-spacing: 0.05em;
+    }
+
+    .piece-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: var(--space-2);
+    }
+
+    .piece-btn {
+        background: var(--bg-card);
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        border-radius: var(--radius-lg);
+        padding: var(--space-2);
+        font-size: 2rem;
+        cursor: pointer;
+        transition: all var(--duration-base) ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: var(--shadow-sm);
+        height: 60px;
+        position: relative;
+    }
+
+    .piece-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+        border-color: rgba(255, 255, 255, 0.4);
+    }
+
+    .piece-btn.active {
+        background: linear-gradient(135deg, var(--royal-gold-500), var(--royal-gold-600));
+        border-color: white;
+        box-shadow: var(--shadow-gold);
+        animation: piece-pulse 0.6s ease-in-out infinite;
+    }
+
+    .piece-btn.active::after {
+        content: '✓';
+        position: absolute;
+        top: -6px;
+        right: -6px;
+        background: var(--success);
+        color: white;
+        width: 20px;
+        height: 20px;
+        border-radius: var(--radius-full);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    @keyframes piece-pulse {
+        0%, 100% { transform: translateY(-2px); }
+        50% { transform: translateY(-4px); }
+    }
+
+    .section-divider {
+        height: 2px;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+        margin: var(--space-4) 0;
+    }
+
+    .eraser-btn {
+        width: 100%;
+        background: var(--bg-card);
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        border-radius: var(--radius-lg);
+        padding: var(--space-3);
+        font-size: 2rem;
+        cursor: pointer;
+        transition: all var(--duration-base) ease;
+        box-shadow: var(--shadow-sm);
+        margin-top: var(--space-3);
+    }
+
+    .eraser-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+    }
+
+    .eraser-btn.active {
+        background: linear-gradient(135deg, var(--error), var(--warning));
+        border-color: white;
+        color: white;
+    }
+
+    #board {
+        box-shadow: var(--shadow-2xl);
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        border: 4px solid var(--chess-wood-600);
+        max-width: 640px;
+        margin: 0 auto;
+    }
+
+    .board-controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-3);
+        justify-content: center;
+        margin-top: var(--space-4);
+    }
+
+    .turn-toggle {
+        display: inline-flex;
+        background: var(--bg-tertiary);
+        border-radius: var(--radius-lg);
+        padding: var(--space-1);
+        border: 1px solid var(--border-primary);
+        margin-top: var(--space-4);
+    }
+
+    .turn-btn {
+        padding: var(--space-2) var(--space-5);
+        border-radius: var(--radius-md);
+        border: none;
+        background: transparent;
+        font-weight: var(--font-semibold);
+        cursor: pointer;
+        transition: all var(--duration-fast) ease;
+        color: var(--text-secondary);
+    }
+
+    .turn-btn.active {
+        background: linear-gradient(135deg, var(--chess-wood-500), var(--chess-wood-600));
+        color: white;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .fen-display {
+        background: var(--bg-tertiary);
+        color: var(--text-primary);
+        border-radius: var(--radius-md);
+        padding: var(--space-3);
+        font-family: var(--font-mono);
+        font-size: var(--text-xs);
+        word-break: break-all;
+        border: 1px solid var(--border-primary);
+        line-height: 1.6;
+    }
+
+    .action-section {
+        background: linear-gradient(135deg, var(--chess-wood-500), var(--chess-wood-700));
+        border-radius: var(--radius-xl);
+        padding: var(--space-6);
+        color: white;
+        box-shadow: var(--shadow-lg);
+    }
+
+    .action-section h3 {
+        margin-bottom: var(--space-4);
+        font-weight: var(--font-bold);
+    }
+
+    .action-btn {
+        width: 100%;
+        background: white;
+        color: var(--chess-wood-700);
+        font-weight: var(--font-bold);
+        padding: var(--space-3);
+        border-radius: var(--radius-lg);
+        border: none;
+        cursor: pointer;
+        transition: all var(--duration-base) ease;
+        margin-bottom: var(--space-3);
+        box-shadow: var(--shadow-sm);
+    }
+
+    .action-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+    }
+
+    .action-btn-secondary {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        border: 2px solid white;
+    }
+
+    .action-btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.3);
+    }
+
+    .success-section {
+        background: linear-gradient(135deg, var(--success), var(--info));
+        border-radius: var(--radius-xl);
+        padding: var(--space-6);
+        color: white;
+        box-shadow: var(--shadow-lg);
+        margin-top: var(--space-4);
+    }
+
+    .link-input {
+        width: 100%;
+        padding: var(--space-3);
+        border-radius: var(--radius-md);
+        background: rgba(255, 255, 255, 0.2);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        color: white;
+        font-family: var(--font-mono);
+        font-size: var(--text-xs);
+        margin-bottom: var(--space-3);
+    }
+
+    .link-actions {
+        display: flex;
+        gap: var(--space-2);
+    }
+
+    .help-card {
+        background: var(--bg-accent);
+        border-radius: var(--radius-lg);
+        padding: var(--space-4);
+        border: 1px solid var(--border-accent);
+    }
+
+    .help-card h4 {
+        font-weight: var(--font-bold);
+        color: var(--text-primary);
+        margin-bottom: var(--space-2);
+        font-size: var(--text-sm);
+    }
+
+    .help-card ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .help-card li {
+        color: var(--text-secondary);
+        font-size: var(--text-xs);
+        padding: var(--space-1) 0;
+    }
+
+    .color-choice-editor:hover {
+        border-color: rgba(255, 255, 255, 0.8) !important;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .color-choice-editor.selected {
+        border-color: white !important;
+        background: rgba(255, 255, 255, 0.3) !important;
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section style="min-height: 100vh; background: var(--bg-secondary); padding: var(--space-10) 0;">
+    <div class="container">
+        <!-- Header -->
+        <div class="text-center animate-fade-in" style="margin-bottom: var(--space-8);">
+            <h1 class="font-heading" style="font-size: var(--text-4xl); margin-bottom: var(--space-2); color: var(--text-primary);">
+                ♟️ Chess Board Editor
+            </h1>
+            <p style="color: var(--text-secondary);">Create and share custom positions</p>
+        </div>
+
+        <!-- Editor Grid -->
+        <div class="editor-container animate-scale-in">
+            <!-- Left Sidebar: Pieces -->
+            <div>
+                <div class="piece-selector">
+                    <h3 class="piece-section-title">⚪ WHITE</h3>
+                    <div class="piece-grid">
+                        <button class="piece-btn" data-piece="wK" title="King">♔</button>
+                        <button class="piece-btn" data-piece="wQ" title="Queen">♕</button>
+                        <button class="piece-btn" data-piece="wR" title="Rook">♖</button>
+                        <button class="piece-btn" data-piece="wB" title="Bishop">♗</button>
+                        <button class="piece-btn" data-piece="wN" title="Knight">♘</button>
+                        <button class="piece-btn" data-piece="wP" title="Pawn">♙</button>
+                    </div>
+
+                    <div class="section-divider"></div>
+
+                    <h3 class="piece-section-title">⚫ BLACK</h3>
+                    <div class="piece-grid">
+                        <button class="piece-btn" data-piece="bK" title="King">♚</button>
+                        <button class="piece-btn" data-piece="bQ" title="Queen">♛</button>
+                        <button class="piece-btn" data-piece="bR" title="Rook">♜</button>
+                        <button class="piece-btn" data-piece="bB" title="Bishop">♝</button>
+                        <button class="piece-btn" data-piece="bN" title="Knight">♞</button>
+                        <button class="piece-btn" data-piece="bP" title="Pawn">♟</button>
+                    </div>
+
+                    <button id="trashBtn" class="eraser-btn" title="Eraser">🧹 Remove</button>
+                </div>
+            </div>
+
+            <!-- Center: Chess Board -->
+            <div>
+                <div class="card">
+                    <div id="board" style="width: 100%;"></div>
+
+                    <div class="board-controls">
+                        <button id="startBtn" class="btn btn-secondary">🏁 Reset</button>
+                        <button id="clearBtn" class="btn btn-ghost">🗑️ Clear</button>
+                        <button id="flipBtn" class="btn btn-ghost">🔄 Flip</button>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; align-items: center; gap: var(--space-2); margin-top: var(--space-4);">
+                        <label style="font-weight: var(--font-semibold); color: var(--text-secondary); font-size: var(--text-sm);">Starting Turn</label>
+                        <div class="turn-toggle">
+                            <button id="whiteTurnBtn" class="turn-btn active">⚪ White</button>
+                            <button id="blackTurnBtn" class="turn-btn">⚫ Black</button>
+                        </div>
+                        <!-- Current Turn Display -->
+                        <div style="margin-top: var(--space-3); padding: var(--space-3); background: var(--bg-accent); border-radius: var(--radius-md); border: 1px solid var(--border-accent); text-align: center; width: 100%;">
+                            <div style="font-size: var(--text-sm); color: var(--text-secondary); margin-bottom: var(--space-1);">Current Turn</div>
+                            <div id="currentTurnDisplay" style="font-size: var(--text-lg); font-weight: var(--font-bold); color: var(--text-primary);">
+                                <span style="font-size: 1.5rem;">♔</span> White
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Sidebar: Actions -->
+            <div>
+                <!-- FEN Display -->
+                <div class="card" style="margin-bottom: var(--space-4);">
+                    <h3 style="font-weight: var(--font-bold); margin-bottom: var(--space-3); color: var(--text-primary);">📝 FEN Notation</h3>
+                    <div class="fen-display" id="fenDisplay">{{ starting_fen }}</div>
+                    <button id="copyFenBtn" class="btn btn-secondary btn-sm" style="width: 100%; margin-top: var(--space-3);">
+                        📋 Copy FEN
+                    </button>
+                </div>
+
+                <!-- Actions -->
+                <div class="action-section">
+                    <h3>⚡ Actions</h3>
+
+                    <!-- Color Selection -->
+                    <div style="margin-bottom: var(--space-4);">
+                        <h4 style="font-weight: var(--font-semibold); margin-bottom: var(--space-3); font-size: var(--text-sm);">
+                            Choose Your Color
+                        </h4>
+                        <div style="display: flex; gap: var(--space-3);">
+                            <label style="flex: 1; cursor: pointer;">
+                                <input type="radio" name="gameColor" value="white" style="display: none;" class="color-radio">
+                                <div class="color-choice-editor" data-color="white" style="border: 2px solid rgba(255, 255, 255, 0.3); border-radius: var(--radius-md); padding: var(--space-3); text-align: center; background: rgba(255, 255, 255, 0.1); transition: all var(--duration-base) ease;">
+                                    <div style="font-size: 2rem; margin-bottom: var(--space-2);">♔</div>
+                                    <div style="font-weight: var(--font-semibold); font-size: var(--text-sm);">White</div>
+                                </div>
+                            </label>
+                            <label style="flex: 1; cursor: pointer;">
+                                <input type="radio" name="gameColor" value="black" style="display: none;" class="color-radio">
+                                <div class="color-choice-editor" data-color="black" style="border: 2px solid rgba(255, 255, 255, 0.3); border-radius: var(--radius-md); padding: var(--space-3); text-align: center; background: rgba(255, 255, 255, 0.1); transition: all var(--duration-base) ease;">
+                                    <div style="font-size: 2rem; margin-bottom: var(--space-2);">♚</div>
+                                    <div style="font-weight: var(--font-semibold); font-size: var(--text-sm);">Black</div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <button id="generateLinkBtn" class="action-btn" disabled style="opacity: 0.5; cursor: not-allowed;">
+                        🔗 Generate Game Link
+                    </button>
+                    {% if user.is_staff %}
+                    <button id="savePositionBtn" class="action-btn action-btn-secondary">
+                        💾 Save Position
+                    </button>
+                    {% endif %}
+                </div>
+
+                <!-- Game Link (Hidden Initially) -->
+                <div id="gameLinkSection" style="display: none;">
+                    <div class="success-section">
+                        <h3 style="margin-bottom: var(--space-3);">✅ Link Created!</h3>
+                        <input type="text" id="gameLinkInput" class="link-input" readonly>
+                        <div class="link-actions">
+                            <button id="copyLinkBtn" class="action-btn" style="flex: 1;">📋 Copy</button>
+                            <a id="openGameBtn" href="#" target="_blank" class="action-btn action-btn-secondary" style="flex: 1; text-align: center; text-decoration: none; display: flex; align-items: center; justify-content: center;">🎮 Play</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Help -->
+                <div class="help-card" style="margin-top: var(--space-4);">
+                    <h4>📖 How to Use</h4>
+                    <ul>
+                        <li>✨ Click piece → click square</li>
+                        <li>🔄 Drag & drop to move</li>
+                        <li>🗑️ Remove mode to delete</li>
+                        <li>🔗 Generate link to share</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Save Position Modal -->
+{% if user.is_staff %}
+<div id="saveModal" class="modal-backdrop" style="display: none;">
+    <div class="modal">
+        <div class="modal-header">
+            <h3 class="modal-title">💾 Save Position</h3>
+            <button class="modal-close" style="background: none; border: none; font-size: var(--text-3xl); cursor: pointer; color: var(--text-tertiary);">&times;</button>
+        </div>
+        <div class="modal-body">
+            <form id="savePositionForm" style="display: flex; flex-direction: column; gap: var(--space-4);">
+                <div class="form-group">
+                    <label class="form-label">Topic:</label>
+                    <select id="topicSelect" class="form-select" required>
+                        <option value="">Select a topic...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description:</label>
+                    <textarea id="positionDescription" class="form-textarea" rows="3" placeholder="Describe this position..." required></textarea>
+                </div>
+                <div style="display: flex; align-items: center; gap: var(--space-2);">
+                    <input type="checkbox" id="isSequencePart" style="width: 1rem; height: 1rem;">
+                    <label for="isSequencePart" style="color: var(--text-secondary); font-size: var(--text-sm);">Part of a move sequence</label>
+                </div>
+                <button type="submit" class="btn btn-primary">💾 Save Position</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Toast Container -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.js"></script>
+<script>
+const STARTING_FEN = '{{ starting_fen }}';
+</script>
+<script src="{% static 'js/board_editor.js' %}"></script>
+{% endblock %}

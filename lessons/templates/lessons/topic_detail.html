@@ -1,0 +1,260 @@
+{% extends "base.html" %}
+
+{% block title %}{{ topic.title }} - Chess Academy{% endblock %}
+
+{% block content %}
+<section style="min-height: 100vh; background: var(--bg-secondary); padding: var(--space-10) 0;">
+    <div class="container">
+        <div style="max-width: 1000px; margin: 0 auto;">
+            <!-- Breadcrumb -->
+            <nav class="animate-fade-in" style="margin-bottom: var(--space-6); font-size: var(--text-sm);">
+                <a href="{% url 'lessons:lesson_list' %}" style="color: var(--chess-wood-600); text-decoration: none; transition: color var(--duration-fast) ease;">
+                    📚 Lessons
+                </a>
+                <span style="margin: 0 var(--space-2); color: var(--text-tertiary);">/</span>
+                <a href="{% url 'lessons:lesson_detail' topic.lesson.id %}" style="color: var(--chess-wood-600); text-decoration: none; transition: color var(--duration-fast) ease;">
+                    {{ topic.lesson.title }}
+                </a>
+                <span style="margin: 0 var(--space-2); color: var(--text-tertiary);">/</span>
+                <span style="color: var(--text-secondary);">{{ topic.title }}</span>
+            </nav>
+
+            <!-- Topic Header Card -->
+            <div class="card card-premium animate-scale-in" style="margin-bottom: var(--space-8);">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: var(--space-3); flex-wrap: wrap;">
+                    <div style="flex: 1;">
+                        <div style="display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap; margin-bottom: var(--space-3);">
+                            <h1 class="font-heading" style="font-size: var(--text-3xl); font-weight: var(--font-bold); color: var(--text-primary); margin: 0;">
+                                {{ topic.title }}
+                            </h1>
+                            {% if not topic.is_enabled %}
+                            <span class="badge badge-secondary" style="display: flex; align-items: center; gap: var(--space-1);">
+                                <svg style="width: 1rem; height: 1rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                </svg>
+                                Disabled
+                            </span>
+                            {% endif %}
+                        </div>
+                        <p style="color: var(--text-secondary); line-height: var(--line-height-relaxed); font-size: var(--text-lg);">
+                            {{ topic.description }}
+                        </p>
+                    </div>
+
+                    <!-- Teacher Controls -->
+                    {% if user.is_staff %}
+                    <div style="display: flex; gap: var(--space-2);">
+                        <a href="{% url 'lessons:topic_update' pk=topic.id %}" class="btn btn-sm btn-info hover-lift" title="Edit topic">
+                            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                            </svg>
+                        </a>
+                        <a href="{% url 'lessons:topic_delete' pk=topic.id %}" class="btn btn-sm btn-error hover-lift" title="Delete topic">
+                            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Positions Section -->
+            <div style="margin-bottom: var(--space-4); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-3);">
+                <h2 class="font-heading" style="font-size: var(--text-2xl); font-weight: var(--font-bold); color: var(--text-primary);">
+                    ♟️ Positions
+                </h2>
+                {% if user.is_staff %}
+                <a href="{% url 'lessons:position_create' topic_pk=topic.id %}" class="btn btn-success hover-lift">
+                    <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                    </svg>
+                    Create Position
+                </a>
+                {% endif %}
+            </div>
+
+            <!-- Positions List -->
+            <div id="positions-list" style="display: flex; flex-direction: column; gap: var(--space-4);">
+                {% for position in positions %}
+                <div class="card hover-lift animate-scale-in position-item{% if not position.is_enabled %} position-disabled{% endif %}" data-position-id="{{ position.id }}" style="animation-delay: {{ forloop.counter0|add:'0.05' }}s;{% if not position.is_enabled %} opacity: 0.6; border: 2px dashed var(--border-secondary);{% endif %}">
+                    <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-6); flex-wrap: wrap;">
+                        <!-- Drag Handle (Teacher Only) -->
+                        {% if user.is_staff %}
+                        <div class="drag-handle" style="cursor: grab; padding: var(--space-2); color: var(--text-tertiary); display: flex; align-items: center;">
+                            <svg style="width: 1.5rem; height: 1.5rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16" />
+                            </svg>
+                        </div>
+                        {% endif %}
+
+                        <!-- Position Content -->
+                        <div style="flex: 1; min-width: 300px;">
+                            <div style="display: flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-2); flex-wrap: wrap;">
+                                <span class="font-heading" style="font-size: var(--text-xl); font-weight: var(--font-bold); color: var(--text-tertiary);">
+                                    {{ position.order }}
+                                </span>
+                                <h3 style="font-weight: var(--font-bold); font-size: var(--text-xl); color: var(--text-primary); margin: 0;">
+                                    {{ position.description|truncatewords:10 }}
+                                </h3>
+                                {% if position.is_sequence_part %}
+                                <span class="badge badge-info">
+                                    ⚡ Sequence
+                                </span>
+                                {% endif %}
+                                {% if position.id in completed_positions %}
+                                <span class="badge badge-success">
+                                    ✓ Completed
+                                </span>
+                                {% endif %}
+                                {% if not position.is_enabled %}
+                                <span class="badge badge-secondary" style="display: flex; align-items: center; gap: var(--space-1); font-size: var(--text-xs);">
+                                    <svg style="width: 0.875rem; height: 0.875rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                    </svg>
+                                    Disabled
+                                </span>
+                                {% endif %}
+                            </div>
+                            <p style="color: var(--text-secondary); font-size: var(--text-sm); line-height: var(--line-height-relaxed);">
+                                {{ position.description }}
+                            </p>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div style="display: flex; flex-direction: column; gap: var(--space-3); align-items: flex-end;">
+                            <a href="{% url 'lessons:position_viewer' position.id %}" class="btn btn-primary hover-lift">
+                                <span>View</span>
+                                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                </svg>
+                            </a>
+
+                            <!-- Teacher Controls -->
+                            {% if user.is_staff %}
+                            <div style="display: flex; gap: var(--space-2);">
+                                <button class="btn btn-sm btn-secondary hover-lift toggle-position" data-position-id="{{ position.id }}" title="{% if position.is_enabled %}Disable{% else %}Enable{% endif %} position">
+                                    <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        {% if position.is_enabled %}
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                        {% else %}
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                                        {% endif %}
+                                    </svg>
+                                </button>
+                                <a href="{% url 'lessons:position_update' pk=position.id %}" class="btn btn-sm btn-info hover-lift" title="Edit position">
+                                    <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                    </svg>
+                                </a>
+                                <a href="{% url 'lessons:position_delete' pk=position.id %}" class="btn btn-sm btn-error hover-lift" title="Delete position">
+                                    <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                </a>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <!-- Empty State -->
+                <div class="card animate-scale-in" style="text-align: center; padding: var(--space-12); background: var(--bg-accent); border: 2px solid var(--border-accent);">
+                    <div style="font-size: 4rem; margin-bottom: var(--space-4);">♟️</div>
+                    <h3 style="font-size: var(--text-2xl); font-weight: var(--font-bold); color: var(--text-primary); margin-bottom: var(--space-2);">
+                        No Positions Yet
+                    </h3>
+                    <p style="color: var(--text-secondary);">
+                        Positions for this topic are coming soon!
+                    </p>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Navigation -->
+            <div style="margin-top: var(--space-8); display: flex; justify-content: flex-start;">
+                <a href="{% url 'lessons:lesson_detail' topic.lesson.id %}" class="btn btn-secondary btn-lg hover-lift">
+                    <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                    </svg>
+                    Back to Lesson
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% if user.is_staff %}
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+<script>
+// Drag and drop reordering for positions
+document.addEventListener('DOMContentLoaded', function() {
+    const positionsList = document.getElementById('positions-list');
+
+    if (positionsList) {
+        new Sortable(positionsList, {
+            handle: '.drag-handle',
+            animation: 150,
+            ghostClass: 'sortable-ghost',
+            onEnd: function(evt) {
+                const positionIds = Array.from(positionsList.querySelectorAll('.position-item')).map(item => item.dataset.positionId);
+
+                // Send reorder request
+                fetch('{% url "lessons:reorder_positions" topic_pk=topic.id %}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: JSON.stringify({ position_ids: positionIds })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        console.log('Positions reordered successfully');
+                    } else {
+                        alert('Error reordering positions: ' + (data.error || 'Unknown error'));
+                        location.reload();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error reordering positions');
+                    location.reload();
+                });
+            }
+        });
+    }
+
+    // Toggle position enabled/disabled
+    document.querySelectorAll('.toggle-position').forEach(button => {
+        button.addEventListener('click', function() {
+            const positionId = this.dataset.positionId;
+
+            fetch(`/lessons/position/${positionId}/toggle/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert('Error toggling position: ' + (data.message || 'Unknown error'));
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error toggling position');
+            });
+        });
+    });
+});
+</script>
+{% endif %}
+{% endblock %}

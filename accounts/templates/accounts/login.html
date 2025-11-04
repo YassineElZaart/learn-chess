@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}Login - Chess Academy{% endblock %}
+
+{% block content %}
+<section style="min-height: 100vh; background: var(--bg-secondary); padding: var(--space-10) 0; display: flex; align-items: center;">
+    <div class="container">
+        <div style="max-width: 480px; margin: 0 auto;">
+            <!-- Card -->
+            <div class="card card-premium animate-scale-in">
+                <!-- Header -->
+                <div style="text-align: center; margin-bottom: var(--space-8);">
+                    <div style="font-size: 4rem; margin-bottom: var(--space-4);">♔</div>
+                    <h1 class="font-heading" style="font-size: var(--text-3xl); color: var(--text-primary); margin: 0 0 var(--space-2) 0;">
+                        Welcome Back
+                    </h1>
+                    <p style="color: var(--text-secondary);">Login to continue your chess journey</p>
+                </div>
+
+                <!-- Form -->
+                <form method="post" style="display: flex; flex-direction: column; gap: var(--space-5);">
+                    {% csrf_token %}
+
+                    <!-- Username Field -->
+                    <div class="form-group">
+                        <label for="id_username" class="form-label">Username</label>
+                        {{ form.username }}
+                        {% if form.username.errors %}
+                        <span class="form-error">{{ form.username.errors.0 }}</span>
+                        {% endif %}
+                    </div>
+
+                    <!-- Password Field -->
+                    <div class="form-group">
+                        <label for="id_password" class="form-label">Password</label>
+                        {{ form.password }}
+                        {% if form.password.errors %}
+                        <span class="form-error">{{ form.password.errors.0 }}</span>
+                        {% endif %}
+                    </div>
+
+                    <!-- Non-field Errors -->
+                    {% if form.non_field_errors %}
+                    <div class="alert alert-error">
+                        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <div class="alert-content">
+                            <div class="alert-message">{{ form.non_field_errors.0 }}</div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn btn-primary btn-lg hover-lift" style="width: 100%;">
+                        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                        </svg>
+                        Login
+                    </button>
+                </form>
+
+                <!-- Register Link -->
+                <div style="margin-top: var(--space-6); text-align: center; padding-top: var(--space-6); border-top: 1px solid var(--border-primary);">
+                    <p style="color: var(--text-secondary);">
+                        Don't have an account?
+                        <a href="{% url 'accounts:register' %}" style="color: var(--chess-wood-600); font-weight: var(--font-semibold); text-decoration: none; transition: color var(--duration-fast) ease;">
+                            Register here
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

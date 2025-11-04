@@ -1,0 +1,358 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ position.description }} - Chess Academy{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.css">
+<style>
+    #board {
+        box-shadow: var(--shadow-2xl);
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        border: 4px solid var(--chess-wood-600);
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .analysis-panel {
+        background: var(--bg-accent);
+        border-radius: var(--radius-lg);
+        padding: var(--space-4);
+        border: 1px solid var(--border-accent);
+    }
+
+    .sequence-item {
+        background: var(--bg-tertiary);
+        border: 1px solid var(--border-primary);
+        border-radius: var(--radius-md);
+        padding: var(--space-3);
+        transition: all var(--duration-base) ease;
+    }
+
+    .sequence-item:hover {
+        background: var(--bg-hover);
+        border-color: var(--border-accent);
+    }
+
+    .sequence-item.active {
+        background: var(--royal-gold-100);
+        border-color: var(--royal-gold-500);
+        box-shadow: var(--shadow-gold);
+    }
+
+    .color-choice:hover {
+        border-color: var(--chess-wood-500) !important;
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+    }
+
+    .color-choice.selected {
+        border-color: var(--royal-gold-500) !important;
+        background: var(--royal-gold-100) !important;
+        box-shadow: var(--shadow-gold);
+    }
+
+    .turn-choice:hover {
+        border-color: var(--chess-wood-500) !important;
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+    }
+
+    .turn-choice.selected {
+        border-color: var(--royal-gold-500) !important;
+        background: var(--royal-gold-100) !important;
+        box-shadow: var(--shadow-gold);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section style="min-height: 100vh; background: var(--bg-secondary); padding: var(--space-10) 0;">
+    <div class="container">
+        <div style="max-width: 1400px; margin: 0 auto;">
+            <!-- Breadcrumb -->
+            <nav class="animate-fade-in" style="margin-bottom: var(--space-6); font-size: var(--text-sm);">
+                <a href="{% url 'lessons:lesson_list' %}" style="color: var(--chess-wood-600); text-decoration: none;">📚 Lessons</a>
+                <span style="margin: 0 var(--space-2); color: var(--text-tertiary);">/</span>
+                <a href="{% url 'lessons:lesson_detail' position.topic.lesson.id %}" style="color: var(--chess-wood-600); text-decoration: none;">
+                    {{ position.topic.lesson.title }}
+                </a>
+                <span style="margin: 0 var(--space-2); color: var(--text-tertiary);">/</span>
+                <a href="{% url 'lessons:topic_detail' position.topic.id %}" style="color: var(--chess-wood-600); text-decoration: none;">
+                    {{ position.topic.title }}
+                </a>
+                <span style="margin: 0 var(--space-2); color: var(--text-tertiary);">/</span>
+                <span style="color: var(--text-secondary);">Position {{ position.order }}</span>
+            </nav>
+
+            <!-- Main Grid -->
+            <div style="display: grid; grid-template-columns: 1fr 380px; gap: var(--space-6); align-items: start;">
+                <!-- Left: Chess Board & Controls -->
+                <div class="animate-scale-in">
+                    <div class="card">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: var(--space-3); margin-bottom: var(--space-6); flex-wrap: wrap;">
+                            <h1 style="font-size: var(--text-2xl); font-weight: var(--font-bold); color: var(--text-primary); margin: 0; display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap;">
+                                {{ position.description }}
+                                {% if not position.is_enabled %}
+                                <span class="badge badge-secondary" style="display: flex; align-items: center; gap: var(--space-1);">
+                                    <svg style="width: 1rem; height: 1rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                    </svg>
+                                    Disabled
+                                </span>
+                                {% endif %}
+                            </h1>
+
+                            <!-- Teacher Controls -->
+                            {% if user.is_staff %}
+                            <div style="display: flex; gap: var(--space-2);">
+                                <a href="{% url 'lessons:position_update' pk=position.id %}" class="btn btn-sm btn-info hover-lift" title="Edit position">
+                                    <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                    </svg>
+                                </a>
+                                <a href="{% url 'lessons:position_delete' pk=position.id %}" class="btn btn-sm btn-error hover-lift" title="Delete position">
+                                    <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                </a>
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Chess Board -->
+                        <div id="board" style="width: 100%; margin-bottom: var(--space-6);"></div>
+
+                        <!-- Analysis Mode Panel -->
+                        <div class="analysis-panel" style="margin-bottom: var(--space-6);">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-3);">
+                                <h3 style="font-weight: var(--font-bold); color: var(--text-primary);">🔍 Analysis Mode</h3>
+                                <span style="font-size: var(--text-sm); color: var(--text-tertiary);">Drag pieces to explore</span>
+                            </div>
+
+                            <!-- Analysis Buttons -->
+                            <div style="display: flex; gap: var(--space-2); margin-bottom: var(--space-4);">
+                                <button id="undoMoveBtn" class="btn btn-secondary" style="flex: 1;" disabled>
+                                    <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
+                                    </svg>
+                                    Undo Move
+                                </button>
+                                <button id="resetAnalysisBtn" class="btn btn-secondary" style="flex: 1;" disabled>
+                                    <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                    </svg>
+                                    Reset to Start
+                                </button>
+                            </div>
+
+                            <!-- Move History Display -->
+                            <div style="background: var(--bg-card); border-radius: var(--radius-md); padding: var(--space-3); border: 1px solid var(--border-primary);">
+                                <h4 style="font-size: var(--text-sm); font-weight: var(--font-semibold); color: var(--text-secondary); margin-bottom: var(--space-2);">Your Moves:</h4>
+                                <div id="analysisMoveList" style="font-size: var(--text-sm); font-family: var(--font-mono);">
+                                    <p style="color: var(--text-tertiary); font-style: italic;">No moves yet - drag pieces to explore!</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Navigation Controls -->
+                        <div style="display: flex; justify-content: space-between; align-items: center; gap: var(--space-3); margin-bottom: var(--space-4); flex-wrap: wrap;">
+                            {% if prev_position_id %}
+                            <a href="{% url 'lessons:position_viewer' prev_position_id %}" class="btn btn-secondary hover-lift">
+                                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                                </svg>
+                                Previous
+                            </a>
+                            {% else %}
+                            <span class="btn btn-ghost" style="opacity: 0.5; cursor: not-allowed;">
+                                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                                </svg>
+                                Previous
+                            </span>
+                            {% endif %}
+
+                            <button id="completeBtn" class="btn {% if is_completed %}btn-ghost{% else %}btn-accent{% endif %} hover-lift"
+                                {% if is_completed %}disabled style="opacity: 0.5; cursor: not-allowed;"{% endif %}>
+                                {% if is_completed %}
+                                    <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    Completed
+                                {% else %}
+                                    Mark Complete
+                                {% endif %}
+                            </button>
+
+                            {% if next_position_id %}
+                            <a href="{% url 'lessons:position_viewer' next_position_id %}" class="btn btn-primary hover-lift">
+                                Next
+                                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                </svg>
+                            </a>
+                            {% else %}
+                            <span class="btn btn-ghost" style="opacity: 0.5; cursor: not-allowed;">
+                                Next
+                                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                </svg>
+                            </span>
+                            {% endif %}
+                        </div>
+
+                        <!-- Color Selection for Practice -->
+                        <div style="background: var(--bg-accent); border-radius: var(--radius-lg); padding: var(--space-4); border: 1px solid var(--border-accent); margin-bottom: var(--space-4);">
+                            <h4 style="font-weight: var(--font-semibold); color: var(--text-primary); margin-bottom: var(--space-3); font-size: var(--text-base);">
+                                Choose Your Color
+                            </h4>
+                            <div style="display: flex; gap: var(--space-3);">
+                                <label style="flex: 1; cursor: pointer;">
+                                    <input type="radio" name="practiceColor" value="white" style="display: none;" class="color-radio">
+                                    <div class="color-choice" data-color="white" style="border: 2px solid var(--border-primary); border-radius: var(--radius-md); padding: var(--space-3); text-align: center; background: var(--bg-card); transition: all var(--duration-base) ease;">
+                                        <div style="font-size: 2rem; margin-bottom: var(--space-2);">♔</div>
+                                        <div style="font-weight: var(--font-semibold); color: var(--text-primary);">White</div>
+                                    </div>
+                                </label>
+                                <label style="flex: 1; cursor: pointer;">
+                                    <input type="radio" name="practiceColor" value="black" style="display: none;" class="color-radio">
+                                    <div class="color-choice" data-color="black" style="border: 2px solid var(--border-primary); border-radius: var(--radius-md); padding: var(--space-3); text-align: center; background: var(--bg-card); transition: all var(--duration-base) ease;">
+                                        <div style="font-size: 2rem; margin-bottom: var(--space-2);">♚</div>
+                                        <div style="font-weight: var(--font-semibold); color: var(--text-primary);">Black</div>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Turn Selection for Practice -->
+                        <div style="background: var(--bg-accent); border-radius: var(--radius-lg); padding: var(--space-4); border: 1px solid var(--border-accent); margin-bottom: var(--space-4);">
+                            <h4 style="font-weight: var(--font-semibold); color: var(--text-primary); margin-bottom: var(--space-3); font-size: var(--text-base);">
+                                Starting Turn
+                            </h4>
+                            <div style="display: flex; gap: var(--space-3);">
+                                <label style="flex: 1; cursor: pointer;">
+                                    <input type="radio" name="startingTurn" value="white" style="display: none;" class="turn-radio" checked>
+                                    <div class="turn-choice" data-turn="white" style="border: 2px solid var(--border-primary); border-radius: var(--radius-md); padding: var(--space-3); text-align: center; background: var(--bg-card); transition: all var(--duration-base) ease;">
+                                        <div style="font-size: 1.5rem; margin-bottom: var(--space-2);">♔</div>
+                                        <div style="font-weight: var(--font-semibold); color: var(--text-primary); font-size: var(--text-sm);">White to Move</div>
+                                    </div>
+                                </label>
+                                <label style="flex: 1; cursor: pointer;">
+                                    <input type="radio" name="startingTurn" value="black" style="display: none;" class="turn-radio">
+                                    <div class="turn-choice" data-turn="black" style="border: 2px solid var(--border-primary); border-radius: var(--radius-md); padding: var(--space-3); text-align: center; background: var(--bg-card); transition: all var(--duration-base) ease;">
+                                        <div style="font-size: 1.5rem; margin-bottom: var(--space-2);">♚</div>
+                                        <div style="font-weight: var(--font-semibold); color: var(--text-primary); font-size: var(--text-sm);">Black to Move</div>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Practice Button -->
+                        <button id="practiceBtn" class="btn btn-primary hover-lift" style="width: 100%; opacity: 0.5; cursor: not-allowed;" disabled>
+                            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            Practice from this Position
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Right Sidebar -->
+                <div style="display: flex; flex-direction: column; gap: var(--space-6);">
+                    <!-- Position Info Card -->
+                    <div class="card animate-scale-in" style="animation-delay: 0.1s;">
+                        <h2 style="font-weight: var(--font-bold); font-size: var(--text-xl); margin-bottom: var(--space-4); color: var(--text-primary);">
+                            📊 Position Details
+                        </h2>
+                        <div style="display: flex; flex-direction: column; gap: var(--space-2); font-size: var(--text-sm);">
+                            <div style="display: flex; justify-content: space-between;">
+                                <span style="color: var(--text-secondary); font-weight: var(--font-medium);">Topic:</span>
+                                <span style="color: var(--text-primary); font-weight: var(--font-semibold);">{{ position.topic.title }}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <span style="color: var(--text-secondary); font-weight: var(--font-medium);">Order:</span>
+                                <span class="badge badge-primary">{{ position.order }}</span>
+                            </div>
+                            {% if position.is_sequence_part %}
+                            <div style="margin-top: var(--space-2); padding: var(--space-2); background: var(--info-light); border-radius: var(--radius-sm); color: var(--info);">
+                                <strong>⚡ This position has a move sequence</strong>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Move Sequences Card -->
+                    {% if position.is_sequence_part and sequences %}
+                    <div class="card animate-scale-in" style="animation-delay: 0.2s;">
+                        <h2 style="font-weight: var(--font-bold); font-size: var(--text-xl); margin-bottom: var(--space-4); color: var(--text-primary);">
+                            📜 Move Sequence
+                        </h2>
+                        <div style="display: flex; flex-direction: column; gap: var(--space-3);">
+                            <button id="playSequenceBtn" class="btn btn-accent hover-lift" style="width: 100%;">
+                                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                Play Sequence
+                            </button>
+                            <button id="resetSequenceBtn" class="btn btn-secondary hover-lift" style="width: 100%; display: none;">
+                                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                </svg>
+                                Reset
+                            </button>
+
+                            <div style="margin-bottom: var(--space-3); display: flex; align-items: center; justify-content: space-between;">
+                                <label style="display: flex; align-items: center; gap: var(--space-2); cursor: pointer; font-size: var(--text-sm); color: var(--text-secondary);">
+                                    <input type="checkbox" id="showVariationsToggle" checked style="cursor: pointer;">
+                                    <span>Show Variations</span>
+                                </label>
+                                <button id="playMainLineBtn" class="btn btn-sm btn-secondary hover-lift" style="display: none;">
+                                    Play Main Line Only
+                                </button>
+                            </div>
+
+                            <div id="sequenceList" style="display: flex; flex-direction: column; gap: var(--space-2);">
+                                <!-- Sequences will be rendered by JavaScript with tree structure -->
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- FEN String Card -->
+                    <div class="card animate-scale-in" style="animation-delay: 0.3s;">
+                        <h2 style="font-weight: var(--font-bold); font-size: var(--text-xl); margin-bottom: var(--space-4); color: var(--text-primary);">
+                            🔢 FEN String
+                        </h2>
+                        <textarea
+                            id="fenDisplay"
+                            class="form-textarea"
+                            style="font-family: var(--font-mono); font-size: var(--text-xs); line-height: 1.6;"
+                            rows="3"
+                            readonly
+                        >{{ position.fen }}</textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Toast Container -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+<script src="{% static 'js/board-annotations.js' %}"></script>
+<script>
+const POSITION_ID = {{ position.id }};
+const STARTING_FEN = '{{ position.fen }}';
+const HAS_SEQUENCE = {{ position.is_sequence_part|lower }};
+const SEQUENCES = {{ sequences_json|safe|default:'[]' }};
+</script>
+<script src="{% static 'js/position_viewer.js' %}"></script>
+{% endblock %}

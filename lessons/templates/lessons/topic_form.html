@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+{% block title %}{{ action }} Topic - Chess Academy{% endblock %}
+
+{% block content %}
+<section style="min-height: 100vh; background: var(--bg-secondary); padding: var(--space-10) 0;">
+    <div class="container">
+        <div style="max-width: 800px; margin: 0 auto;">
+            <!-- Header -->
+            <div class="animate-fade-in" style="margin-bottom: var(--space-8);">
+                <h1 class="font-heading" style="font-size: var(--text-4xl); color: var(--text-primary); margin: 0 0 var(--space-2) 0;">
+                    {{ action }} Topic
+                </h1>
+                <p style="color: var(--text-secondary);">
+                    {% if lesson %}in {{ lesson.title }}{% else %}{% if action == 'Create' %}Create a new topic{% else %}Edit topic details{% endif %}{% endif %}
+                </p>
+            </div>
+
+            <!-- Form Card -->
+            <div class="card animate-slide-in-up">
+                <form method="post" novalidate>
+                    {% csrf_token %}
+
+                    {% if form.non_field_errors %}
+                    <div class="alert alert-error" style="margin-bottom: var(--space-6);">
+                        {{ form.non_field_errors }}
+                    </div>
+                    {% endif %}
+
+                    <div style="display: flex; flex-direction: column; gap: var(--space-6);">
+                        <!-- Lesson -->
+                        <div>
+                            <label for="{{ form.lesson.id_for_label }}" class="form-label">
+                                Lesson *
+                            </label>
+                            {{ form.lesson }}
+                            {% if form.lesson.errors %}
+                            <div class="form-error">{{ form.lesson.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Title -->
+                        <div>
+                            <label for="{{ form.title.id_for_label }}" class="form-label">
+                                Title *
+                            </label>
+                            {{ form.title }}
+                            {% if form.title.errors %}
+                            <div class="form-error">{{ form.title.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Description -->
+                        <div>
+                            <label for="{{ form.description.id_for_label }}" class="form-label">
+                                Description *
+                            </label>
+                            {{ form.description }}
+                            {% if form.description.errors %}
+                            <div class="form-error">{{ form.description.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Order -->
+                        <div>
+                            <label for="{{ form.order.id_for_label }}" class="form-label">
+                                Order
+                            </label>
+                            {{ form.order }}
+                            <div style="font-size: var(--text-sm); color: var(--text-tertiary); margin-top: var(--space-1);">
+                                {{ form.order.help_text }}
+                            </div>
+                            {% if form.order.errors %}
+                            <div class="form-error">{{ form.order.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Is Enabled -->
+                        <div style="padding: var(--space-4); background: var(--bg-tertiary); border-radius: var(--radius-lg); border: 1px solid var(--border-secondary);">
+                            <label style="display: flex; align-items: center; gap: var(--space-3); cursor: pointer;">
+                                {{ form.is_enabled }}
+                                <div>
+                                    <div style="font-weight: var(--font-semibold); color: var(--text-primary); margin-bottom: var(--space-1);">
+                                        Enable Topic
+                                    </div>
+                                    <div style="font-size: var(--text-sm); color: var(--text-secondary);">
+                                        {{ form.is_enabled.help_text }}
+                                    </div>
+                                </div>
+                            </label>
+                            {% if form.is_enabled.errors %}
+                            <div class="form-error">{{ form.is_enabled.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div style="display: flex; gap: var(--space-3); margin-top: var(--space-8); flex-wrap: wrap;">
+                        <button type="submit" class="btn btn-primary btn-lg hover-lift">
+                            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                            </svg>
+                            {{ action }} Topic
+                        </button>
+                        <a href="{% if cancel_id %}{% if cancel_url == 'lessons:topic_detail' %}{% url cancel_url topic_id=cancel_id %}{% else %}{% url cancel_url lesson_id=cancel_id %}{% endif %}{% else %}{% url cancel_url %}{% endif %}" class="btn btn-secondary btn-lg hover-lift">
+                            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                            Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

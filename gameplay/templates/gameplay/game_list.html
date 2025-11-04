@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+
+{% block title %}My Games - Chess Academy{% endblock %}
+
+{% block content %}
+<section style="min-height: 100vh; background: var(--bg-secondary); padding: var(--space-10) 0;">
+    <div class="container">
+        <div style="max-width: 900px; margin: 0 auto;">
+            <!-- Header -->
+            <div class="animate-fade-in" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-8); flex-wrap: wrap; gap: var(--space-4);">
+                <h1 class="font-heading" style="font-size: var(--text-4xl); color: var(--text-primary); margin: 0;">
+                    ♟️ My Games
+                </h1>
+                <form method="post" action="{% url 'gameplay:create_game' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary btn-lg hover-lift">
+                        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                        </svg>
+                        New Game
+                    </button>
+                </form>
+            </div>
+
+            <!-- Games List -->
+            <div style="display: flex; flex-direction: column; gap: var(--space-4);">
+                {% for game in games %}
+                <div class="card hover-lift animate-scale-in" style="animation-delay: {{ forloop.counter0|add:'0.1' }}s;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--space-4);">
+                        <!-- Game Info -->
+                        <div style="flex: 1; min-width: 300px;">
+                            <div style="display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-3); flex-wrap: wrap;">
+                                <h3 style="font-weight: var(--font-bold); font-size: var(--text-lg); color: var(--text-primary); margin: 0;">
+                                    <span style="color: var(--text-secondary);">⚪</span> {{ game.white_player.username|default:"Waiting" }}
+                                    <span style="color: var(--text-tertiary); margin: 0 var(--space-2);">vs</span>
+                                    <span style="color: var(--text-secondary);">⚫</span> {{ game.black_player.username|default:"Waiting" }}
+                                </h3>
+                                <span class="badge {% if game.status == 'waiting' %}badge-warning{% elif game.status == 'in_progress' %}badge-success{% else %}badge-info{% endif %}">
+                                    {{ game.status|title }}
+                                </span>
+                            </div>
+
+                            <!-- Game Details -->
+                            <div style="display: flex; gap: var(--space-4); flex-wrap: wrap; font-size: var(--text-sm); color: var(--text-secondary);">
+                                <span style="display: flex; align-items: center; gap: var(--space-1);">
+                                    <svg style="width: 1rem; height: 1rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    {{ game.created_at|date:"M d, Y H:i" }}
+                                </span>
+                                <span style="display: flex; align-items: center; gap: var(--space-1);">
+                                    ♟️ {{ game.moves.count }} moves
+                                </span>
+                                {% if game.current_turn %}
+                                <span style="display: flex; align-items: center; gap: var(--space-1);">
+                                    Turn: <strong>{{ game.current_turn|title }}</strong>
+                                </span>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Actions -->
+                        <div>
+                            <a href="{% url 'gameplay:game_view' game.unique_link %}" class="btn {% if game.status == 'waiting' %}btn-accent{% else %}btn-primary{% endif %} hover-lift">
+                                {% if game.status == 'waiting' %}
+                                    <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                                    </svg>
+                                    Join Game
+                                {% else %}
+                                    <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                    </svg>
+                                    View Game
+                                {% endif %}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <!-- Empty State -->
+                <div class="card animate-scale-in" style="text-align: center; padding: var(--space-12); background: var(--bg-accent); border: 2px solid var(--border-accent);">
+                    <div style="font-size: 4rem; margin-bottom: var(--space-4);">🎮</div>
+                    <h3 style="font-size: var(--text-2xl); font-weight: var(--font-bold); color: var(--text-primary); margin-bottom: var(--space-2);">
+                        No Games Yet
+                    </h3>
+                    <p style="color: var(--text-secondary); margin-bottom: var(--space-6); max-width: 400px; margin-left: auto; margin-right: auto;">
+                        Start your chess journey by creating your first game. Challenge yourself and improve your skills!
+                    </p>
+                    <form method="post" action="{% url 'gameplay:create_game' %}" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary btn-lg hover-lift">
+                            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                            </svg>
+                            Create Your First Game
+                        </button>
+                    </form>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Pagination -->
+            {% if page_obj.has_other_pages %}
+            <div style="margin-top: var(--space-8); display: flex; justify-content: center; align-items: center; gap: var(--space-2);">
+                {% if page_obj.has_previous %}
+                <a href="?page=1" class="btn btn-secondary hover-lift">
+                    <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
+                    </svg>
+                    First
+                </a>
+                <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-secondary hover-lift">
+                    <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                    </svg>
+                    Previous
+                </a>
+                {% endif %}
+
+                <span class="badge badge-gold" style="padding: var(--space-3) var(--space-4); font-size: var(--text-base);">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                </span>
+
+                {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}" class="btn btn-secondary hover-lift">
+                    Next
+                    <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </a>
+                <a href="?page={{ page_obj.paginator.num_pages }}" class="btn btn-secondary hover-lift">
+                    Last
+                    <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7" />
+                    </svg>
+                </a>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

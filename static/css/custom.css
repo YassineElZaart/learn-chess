@@ -1,0 +1,199 @@
+/* Custom Chess Platform Styles */
+
+/* Button Styles */
+.btn-primary {
+    @apply px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold;
+}
+
+.btn-secondary {
+    @apply px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors font-semibold;
+}
+
+.btn-success {
+    @apply px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-semibold;
+}
+
+.btn-danger {
+    @apply px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-semibold;
+}
+
+.btn-sm {
+    @apply px-3 py-1 text-sm rounded;
+}
+
+/* Piece Button */
+.piece-btn {
+    @apply px-3 py-2 bg-gray-200 rounded hover:bg-gray-300 transition-colors text-sm;
+}
+
+.piece-btn.active {
+    @apply bg-blue-500 text-white;
+}
+
+/* Modal Styles */
+.modal {
+    @apply fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50;
+}
+
+.modal-content {
+    @apply bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-screen overflow-y-auto;
+}
+
+.modal-header {
+    @apply flex justify-between items-center p-6 border-b;
+}
+
+.modal-close {
+    @apply text-2xl font-bold text-gray-500 hover:text-gray-700 cursor-pointer;
+}
+
+.modal-body {
+    @apply p-6;
+}
+
+/* Toast Notification */
+.toast {
+    @apply fixed bottom-4 right-4 px-6 py-3 text-white rounded-lg shadow-lg z-50;
+}
+
+/* Chess Board Adjustments */
+.board-container {
+    @apply mx-auto;
+}
+
+/* Move History */
+#moveHistory {
+    @apply max-h-96 overflow-y-auto p-4 bg-gray-50 rounded-lg;
+}
+
+.move-pair {
+    @apply mb-1;
+}
+
+.move-number {
+    @apply font-bold text-gray-600 mr-2;
+}
+
+.move {
+    @apply px-2 py-1 bg-white rounded mr-1 inline-block hover:bg-blue-50 cursor-pointer;
+}
+
+/* Sequence Items */
+.sequence-item {
+    @apply border-gray-300 transition-all;
+}
+
+.sequence-item.active {
+    @apply border-blue-500 bg-blue-50;
+}
+
+.sequence-item.completed {
+    @apply border-green-500 bg-green-50;
+}
+
+.sequence-status {
+    @apply text-lg;
+}
+
+/* Progress Bar */
+.progress-bar {
+    @apply w-full bg-gray-200 rounded-full h-2;
+}
+
+.progress-fill {
+    @apply bg-blue-600 h-2 rounded-full transition-all duration-300;
+}
+
+/* Game Status */
+.status-waiting {
+    @apply bg-yellow-100 text-yellow-800;
+}
+
+.status-in-progress {
+    @apply bg-green-100 text-green-800;
+}
+
+.status-completed {
+    @apply bg-blue-100 text-blue-800;
+}
+
+.status-draw {
+    @apply bg-gray-100 text-gray-800;
+}
+
+.status-resigned {
+    @apply bg-red-100 text-red-800;
+}
+
+/* Difficulty Badges */
+.difficulty-beginner {
+    @apply bg-green-100 text-green-800;
+}
+
+.difficulty-intermediate {
+    @apply bg-yellow-100 text-yellow-800;
+}
+
+.difficulty-advanced {
+    @apply bg-red-100 text-red-800;
+}
+
+/* Connection Status */
+#connectionStatus {
+    @apply text-sm font-semibold;
+}
+
+/* Responsive Board */
+@media (max-width: 640px) {
+    #board {
+        width: 100% !important;
+    }
+}
+
+/* Form Styles */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+textarea,
+select {
+    @apply w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500;
+}
+
+/* Card Styles */
+.card {
+    @apply bg-white rounded-lg shadow-lg p-6;
+}
+
+/* Loading Spinner */
+.spinner {
+    @apply inline-block w-6 h-6 border-4 border-gray-300 border-t-blue-600 rounded-full animate-spin;
+}
+
+/* Utility Classes */
+.container {
+    @apply mx-auto px-4;
+}
+
+@media (min-width: 640px) {
+    .container {
+        max-width: 640px;
+    }
+}
+
+@media (min-width: 768px) {
+    .container {
+        max-width: 768px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .container {
+        max-width: 1024px;
+    }
+}
+
+@media (min-width: 1280px) {
+    .container {
+        max-width: 1280px;
+    }
+}
